@@ -1,0 +1,494 @@
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/languages/go.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <style>
+        img { max-width:100%; }
+        .codeblock { 
+        background: #B0B0B0; padding:1px 10px 0px 10px; border-radius: 5px; overflow-x:auto; 
+        }
+        code {
+     font-family: monospace; font-size: inherit; color: #202020; 
+        }
+        .inlineCoed {
+     font-family: monospace; font-size: inherit; color: #202020; 
+        }
+    </style>
+    </head>
+    <body style="background: #F0F0F0;">
+    <div style="margin: 0 auto; width:80%;  position: relative;">
+    <div style="padding:20px; margin:0px;z-index: 5; text-align:left; background-color: #DCDCDC; border-radius: 5px; position: relative;">
+    <h2 style="margin-left:0px;" id="Final_Project_Information">Final Project Information</h2>
+    <p></p>
+    <p>Welcome to the last project for the NoSQL course! Great job making it this far! This hands-on will be different from the hands-on projects you have previously seen in a couple of different ways. You will be putting together the numerous topics you have learned into one large project. It is designed to mimic real problems which you may face in your career, so it may be a challenge for you and will also take several hours.</p>
+    <p></p>
+    <p>Take this project step-by-step and be aware that the project description below is written to be a bit less specific than previous Hands-Ons. The hands-on is supposed to challenge you to do some problem solving to figure out how to accomplish a task. You can always review past lessons or use a Google search if needed. Good luck!</p>
+    <p></p>
+    <p>&gt; [!Help] Additional Help!</p>
+    <p>&gt; Before beginning this hands-on, you may want to watch this&nbsp;<a href="https://vimeo.com/428206689" target="_blank">recorded live workshop, "Winnie the Pooh and Databases Too,"</a>&nbsp;that goes over a similar example.</p>
+    <p></p>
+    <p>&gt; [!Caution] Caution!</p>
+    <p>&gt; Do not submit your project until you have completed all requirements! You will not be able to resubmit.</p>
+    <p></p>
+    <p>&gt; [!info] To Submit</p>
+    <p>&gt; Be sure to zip and submit your <code class="inlineCoed">Lesson5handson</code> text document when finished! You will not be able to re-submit, so be sure the screenshots to each part are located within this document.</p>
+    <p></p>
+    <p><a href="Notes%20from%20Winnie%20The%20Pooh%20Databases%20Too.md" target="_blank">Notes from Winnie The Pooh Databases Too</a></p>
+    <p>___</p>
+    
+    
+    <h2 style="margin-left:0px;" id="Requirements">Requirements</h2>
+    <p></p>
+    <p>For this hands on, you will be working through several real-life scenarios within new collections. This Hands-On is structured into _two_ parts, and each part will ask you to run multiple queries. After each query, please take a screenshot and add it to a text document (or an equivalent) and name this file <code class="inlineCoed">Lesson5handson</code>. This way, you will be able to submit your answers to each part all at once.</p>
+    <p></p>
+    <p>___</p>
+    <p></p>
+    <h1 style="margin-left:0px;" id="Part_1">Part 1</h1>
+    <p></p>
+    <p>You have just been hired at a startup company. They currently only have ten employees, but they need to be included in the database. So far, they have only been tracked within an excel sheet. Your boss would like you to create a new collection in Atlas named <code class="inlineCoed">employees</code>. Take a look at the following data and the notes listed below before inserting any data:</p>
+    <p></p>
+    <p>| Name | Birthday | Address | City | State | Position Name | Remote | Full Time |</p>
+    <hr>
+    <p>| Alison Davidson | 04/05/75 | 874 W. Oak Place | Gary | Indiana | Customer Support | Yes | Yes |</p>
+    <p>| Henry Chapelton | 09/29/80 | 9324 E. Vista Way | Tempe | Arizona | Customer Support | No | Yes |</p>
+    <p>| Alex Miller | 11/22/83 | 244 Price Road | Mesa | Arizona | Customer Support | No | No |</p>
+    <p>| Carly Nielson | 08/04/87 | 678 W. Westward Road | Phoenix | Arizona | Office Manager | No | Yes |</p>
+    <p>| Tom Talbot | 12/30/89 | 12 Oakland Way | Chandler | Arizona | Inventory Manager | No | Yes |</p>
+    <p>| Mary Crawley | 07/06/80 | 1010 Granite Way | Charlotte | North Carolina | Human Resources | Yes | Yes |</p>
+    <p>| Daisy Baxter | 09/09/87 | 990 E. 84th St. | Tempe | Arizona | CEO | No | Yes |</p>
+    <p>| William Coyle | 10/11/91 | 944 W. 16th St. | Phoenix | Arizona | Intern | No | No |</p>
+    <p>| Edith Bates | 07/28/90 | 7 E. 20th Pl. | Chandler | Arizona | Customer Support | No | Yes |</p>
+    <p>| Gwen Harding | 10/11/86 | 234 W. 48th. St. | Phoenix | Arizona | Office Assistent | No | Yes |</p>
+    <p></p>
+    <p><b>Notes:</b></p>
+    <p></p>
+    <p></p><ul style="margin-left:0px;"><li>The <code class="inlineCoed">Birthday</code> field should have a data type of Date.</li></ul><p></p>
+    <p></p><ul style="margin-left:0px;"><li>The <code class="inlineCoed">Position Name</code>, <code class="inlineCoed">Remote</code>, and <code class="inlineCoed">Full Time</code> fields should be within an embedded document called <code class="inlineCoed">position</code>.</li></ul><p></p>
+    <p></p><ul style="margin-left:20px;"><li><code class="inlineCoed">position.PositionName</code></li></ul><p></p>
+    <p></p><ul style="margin-left:20px;"><li><code class="inlineCoed">position.Remote</code></li></ul><p></p>
+    <p></p><ul style="margin-left:20px;"><li><code class="inlineCoed">position.FullTime</code></li></ul><p></p>
+    <p></p><ul style="margin-left:0px;"><li><code class="inlineCoed">Remote</code> and <code class="inlineCoed">FullTime</code> fields should have boolean values.</li></ul><p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <h2 style="margin-left:0px;" id="1.1_ _Create">1.1   Create </h2>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.insertMany(<span class="hljs-punctuation">[</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Alison Davidson"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"04/05/1975"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"874 W. Oak Place"</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Gary"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Indiana"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Customer Support"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Henry Chapelton"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"09/29/1980"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"9324 E. Vista Way"</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Tempe"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Customer Support"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Alex Miller"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"11/22/1983"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"244 Price Road"</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Mesa"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Customer Support"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Carly Nielson"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"08/04/1987"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"678 W. Westward Road"</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Phoenix"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Office Manager"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Tom Talbot"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"12/30/1989"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"12 Oakland Way"</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Chandler"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Inventory Manager"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Mary Crawley"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"07/06/1980"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"1010 Granite Way"</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Charlotte"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"North Carolina"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Human Resources"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Daisy Baxter"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"09/09/1987"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"990 E. 84th St."</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Tempe"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"CEO"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"William Coyle"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"10/11/1991"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"944 W. 16th St."</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Phoenix"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Intern"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Edith Bates"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"07/28/1990"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"7 E. 20th Pl."</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Chandler"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Customer Support"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Gwen Harding"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"10/11/1986"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"234 W. 48th. St."</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Phoenix"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Office Assistant"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.1a.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.1a.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.find();
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.1b.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.1b.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <h2 style="margin-left:0px;" id="1.2_ _Change_document_for">1.2   Change document for </h2>
+    <p>It's been about a month since you have inserted all employees into the database. There have been a couple of changes to the company. </p>
+    <p>The CEO decided that he no longer wants remote employees, so they have transferred the remote employees and they are now living in Arizona. </p>
+    <p></p><ul style="margin-left:0px;"><li>Alison Davidson now lives at <code class="inlineCoed">777 E. 1st St. # 120 Tempe, AZ</code></li></ul><p></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.find(<span class="hljs-punctuation">{</span>name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Alison Davidson"</span><span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.2a.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.2a.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.replaceOne(<span class="hljs-punctuation">{</span>name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Alison Davidson"</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Alison Davidson"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"04/05/75"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"777 E. 1st St. # 120"</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Tempe"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Customer Support"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.2b.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.2b.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.find(<span class="hljs-punctuation">{</span>name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Alison Davidson"</span><span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.2c.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.2c.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <h2 style="margin-left:0px;" id="1.3_ _Change_document_for">1.3   Change document for </h2>
+    <p></p><ul style="margin-left:0px;"><li>Mary Crawley now lives at <code class="inlineCoed">8322 W. Vista Pl. Scottsdale, AZ</code></li></ul><p></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.find(<span class="hljs-punctuation">{</span>name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Mary Crawley"</span><span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.3a.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.3a.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.replaceOne(<span class="hljs-punctuation">{</span>name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Mary Crawley"</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+    name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Mary Crawley"</span><span class="hljs-punctuation">,</span>
+    birthday<span class="hljs-punctuation">:</span> new Date( <span class="hljs-string">"07/06/80"</span> )<span class="hljs-punctuation">,</span>
+    address<span class="hljs-punctuation">:</span> <span class="hljs-string">"8322 W. Vista Pl."</span><span class="hljs-punctuation">,</span>
+    city<span class="hljs-punctuation">:</span> <span class="hljs-string">"Scottsdale"</span><span class="hljs-punctuation">,</span>
+    state<span class="hljs-punctuation">:</span> <span class="hljs-string">"Arizona"</span><span class="hljs-punctuation">,</span>
+    position<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> positionName<span class="hljs-punctuation">:</span> <span class="hljs-string">"Human Resources"</span><span class="hljs-punctuation">,</span> remote<span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span> fullTime<span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.3b.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.3b.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.find(<span class="hljs-punctuation">{</span>name<span class="hljs-punctuation">:</span> <span class="hljs-string">"Mary Crawley"</span><span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.3c.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.3c.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <h2 style="margin-left:0px;" id="1.4_ _Remove">1.4   Remove </h2>
+    <p>Since all employees now all live in Arizona, there is no need to have a field named "state" within this collection, so please remove it.</p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.updateMany( <span class="hljs-punctuation">{</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span> <span class="hljs-punctuation">{</span> $unset<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> state<span class="hljs-punctuation">:</span> <span class="hljs-string">""</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.4a.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.4a.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.employees.find();
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.4b.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.4b.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <p></p>
+    <h2 style="margin-left:0px;" id="1.5_ _Create_index_on">1.5   Create index on </h2>
+    <p>Lastly, they would like very efficient searching using the "position" field (remember that field includes a document with three other fields).</p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="json codeblock hljs language-json">json
+    db.employees.createIndex( <span class="hljs-punctuation">{</span> position<span class="hljs-punctuation">:</span> <span class="hljs-number">1</span> <span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.5a.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.5a.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="json codeblock hljs language-json">json
+    db.employees.getIndexes();
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.5b.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 1.5b.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <p></p>
+    <p></p>
+    <h1 style="margin-left:0px;" id="Part_2">Part 2</h1>
+    <p></p>
+    <p>You are currently working for a company who wants to build an app similar to Spotify. Below is a list of data for different songs. Please insert this data into a new collection named <code class="inlineCoed">songs</code>.</p>
+    <p></p>
+    <p>| SongId | Title | Artist | Album | ReleaseYear |</p>
+    <hr>
+    <p>| 1 | Girls Just Want To Have Fun | Cyndi Lauper | She's So Unusual | 1983 |</p>
+    <p>| 2 | Hips Don't Lie | Shakira feat. Wyclef Jean | Oral Fixation Vol. 2 | 2006 |</p>
+    <p>| 3 | Poker Face | Lady Gaga | The Fame | 2008 |</p>
+    <p>| 4 | Wannabe | Spice Girls | Spice | 1996 |</p>
+    <p>| 5 | California Gurls | Katy Perry feat. Snoop Dogg | Teenage Dream | 2010 |</p>
+    <p>| 6 | Bye, Bye, Bye | NSYNC | No Strings Attached | 2000 |</p>
+    <p>| 7 | I Will Always Love You | Whitney Houston | I Will Always Love You: The Best of Whitney Houston | 2012 |</p>
+    <p>| 8 | Baby One More Time | Britney Spears | Baby One More Time | 1999 |</p>
+    <p>| 9 | Vogue | Madonna | I'm Breathless | 1990 |</p>
+    <p>| 10 | Rolling in the Deep | Adele | 21 | 2011 |</p>
+    <p>| 11 | 1234 | Feist | The Reminder | 2007 |</p>
+    <p>| 12 | Elastic Heart | Sia | The Hunger Games: Catching Fire Soundtrack | 2015 |</p>
+    <p>| 13 | Oops! I Did It Again | Britney Spears | Oops! I Did It Again | 2000 |</p>
+    <p>| 14 | Bad Romance | Lady Gaga | The Fame Monster | 2009 |</p>
+    <p>| 15 | Lose Control | Missy Elliot | The Cookbook | 2005 |</p>
+    <p>| 16 | U Can't Touch This | MC Hammer | Please Hammer, Don't Hurt 'Em | 1990 |</p>
+    <p>| 17 | Thriller | Michael Jackson | Thriller | 1982 |</p>
+    <p>| 18 | Single Ladies | Beyonce | I am... Sasha Fierce | 2008 |</p>
+    <p>| 19 | Rhythm Nation | Janet Jackson | Janet Jackson's Rhythm Nation 1814 | 1989 |</p>
+    <p></p>
+    <p><b>Notes:</b></p>
+    <p></p>
+    <p></p><ul style="margin-left:0px;"><li>The <code class="inlineCoed">artist</code>, <code class="inlineCoed">album</code>, and <code class="inlineCoed">releaseYear</code> fields should be an embedded document named <code class="inlineCoed">details</code>.</li></ul><p></p>
+    <p></p><ul style="margin-left:0px;"><li>Be sure that the <code class="inlineCoed">songId</code> and <code class="inlineCoed">releaseYear</code> fields have a type of number.</li></ul><p></p>
+    <p></p>
+    <p></p>
+    <h2 style="margin-left:0px;" id="2.1_ _Create">2.1   Create </h2>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.songs.insertMany(<span class="hljs-punctuation">[</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Girls Just Want To Have Fun"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Cyndi Lauper"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"She's So Unusual"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1983</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Hips Don't Lie"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Shakira feat. Wyclef Jean"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Oral Fixation Vol. 2"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2006</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Poker Face"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Lady Gaga"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"The Fame"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2008</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">4</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Wannabe"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Spice Girls"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Spice"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1996</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"California Gurls"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Katy Perry feat. Snoop Dogg"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Teenage Dream"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2010</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">6</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Bye, Bye, Bye"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"NSYNC"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"No Strings Attached"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2000</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">7</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"I Will Always Love You"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Whitney Houston"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"I Will Always Love You: The Best of Whitney Houston"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2012</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">8</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Baby One More Time"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Britney Spears"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Baby One More Time"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1999</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">9</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Vogue"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Madonna"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"I'm Breathless"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1990</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Rolling in the Deep"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Adele"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"21"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2011</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">11</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1234"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Feist"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"The Reminder"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2007</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Elastic Heart"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Sia"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"The Hunger Games: Catching Fire Soundtrack"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2015</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">13</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Oops! I Did It Again"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Britney Spears"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Oops! I Did It Again"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2000</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">14</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Bad Romance"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Lady Gaga"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"The Fame Monster"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2009</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Lose Control"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Missy Elliot"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"The Cookbook"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2005</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">16</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"U Can't Touch This"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"MC Hammer"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Please Hammer, Don't Hurt 'Em"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1990</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">17</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Thriller"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Michael Jackson"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Thriller"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1982</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">18</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Single Ladies"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Beyonce"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"I am... Sasha Fierce"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2008</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    
+    <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"songId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">19</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Rhythm Nation"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"details"</span> <span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"artist"</span> <span class="hljs-punctuation">:</span> <span class="hljs-string">"Janet Jackson"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"album"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Janet Jackson's Rhythm Nation 1814"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"releaseYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1989</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.1a.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.1a.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.songs.find();
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.1b.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.1b.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <h2 style="margin-left:0px;" id="2.2_ _Rename">2.2   Rename </h2>
+    <p>Next, your company has run into some things they would like to be changed within the database:</p>
+    <p></p><ul style="margin-left:0px;"><li>The <code class="inlineCoed">title</code> field needs to be renamed to <code class="inlineCoed">songTitle</code>, so it is clearer to the developers working with the data.</li></ul><p></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.songs.updateMany( <span class="hljs-punctuation">{</span> <span class="hljs-punctuation">}</span> <span class="hljs-punctuation">,</span> <span class="hljs-punctuation">{</span> $rename<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> 'title'<span class="hljs-punctuation">:</span> 'songTitle' <span class="hljs-punctuation">}</span> <span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.2a.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.2a.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.songs.find();
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.2b.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.2b.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <h2 style="margin-left:0px;" id="2.3_ _Move">2.3   Move </h2>
+    <p></p><ul style="margin-left:0px;"><li>They would like to have the <code class="inlineCoed">artist</code> field to be outside the <code class="inlineCoed">details</code> document but the <code class="inlineCoed">album</code> and <code class="inlineCoed">releaseYear</code> should stay within that document.</li></ul><p></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.songs.updateMany( <span class="hljs-punctuation">{</span> <span class="hljs-punctuation">}</span> <span class="hljs-punctuation">,</span> <span class="hljs-punctuation">{</span> $rename<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> 'details.artist'<span class="hljs-punctuation">:</span> 'artist' <span class="hljs-punctuation">}</span> <span class="hljs-punctuation">}</span>);
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.3a.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.3a.png" style="border-radius: 4px;" "=""></p>
+    <p></p>
+    <pre class="codeblock"><code style="tab-size: 4;" class="JSON codeblock hljs language-JSON">JSON
+    db.songs.find();
+    </code></pre>
+    <p><img src="./assets/DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.3b.png" alt="DS108-05-05 - NoSQL - Lesson 5 Hands-On - 2.3b.png" style="border-radius: 4px;" "=""></p>
+    </div>
+    
+    </div>
+    
+    
+    </body></html>

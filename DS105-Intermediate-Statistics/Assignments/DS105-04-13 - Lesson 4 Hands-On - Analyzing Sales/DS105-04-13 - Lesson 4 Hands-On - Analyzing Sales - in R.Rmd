@@ -1,0 +1,159 @@
+---
+title: "DS105-04-13 - Lesson 4 Hands-On - Analyzing Sales - in R"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+## Load Libraries
+
+```{r}
+library("dplyr")
+library("rcompanion")
+library("car")
+library("tidyverse")
+```
+
+------------------------------------------------------------------------
+
+## Load in Data
+
+```{r}
+avocados <- read.csv("./assets/avocados.csv")
+
+  # View data
+    head(avocados)
+```
+
+------------------------------------------------------------------------
+
+## Question Setup
+
+**Does the average price of avocados differ between Albany, Houston, and Seattle?**
+
+```{r}
+# Find column names
+colnames(avocados)
+```
+
+------------------------------------------------------------------------
+
+## Data Wrangling
+
+### Filter Data
+
+```{r}
+price = na.omit(avocados %>% filter(region %in% c("Albany", "Houston", "Seattle")))
+
+  # Confirm data change
+    unique(price$region)
+```
+
+### Convert Dependent Variable `price` to numberic
+
+```{r}
+price$AveragePrice = as.numeric(price$AveragePrice)
+
+  # Confirm data change
+    str(price)
+```
+
+------------------------------------------------------------------------
+
+## **Test Assumptions**
+
+### **Assumption: Normality**
+
+Test for the normality of the dependent variable.
+
+```{r}
+plotNormalHistogram(price$AveragePrice)
+```
+
+#### Transform for normality using `Tukey's Ladder of Power`
+
+```{r}
+price$AveragePriceTUK <- transformTukey(price$AveragePrice, plotit=FALSE)
+
+plotNormalHistogram(price$AveragePriceTUK)
+```
+
+::: {style="color: #238823"}
+**Successfully transformed, meets assumption of Normality.**
+:::
+
+### **Assumption: Homogeneity of Variance**
+
+Using `Bartlett's test` since the data is now transformed close to normal distributed.\
+Homogeneity of Variance is met if `p > .05` - *not significant*.
+
+#### **Bartlett's Test**
+
+Use the function `bartlett.test()`, with the argument of the `y data` separated by a tilde, followed by the `x data`. `data=` argument is the name of the dataset.
+
+```{r}
+bartlett.test(AveragePriceTUK ~ region, data=price)
+```
+
+::: {style="color: #D2222D"}
+**Fails assumption of Homogeneity of Variance.**
+
+**`p < .05`**, which means that the data fails the assumption of Homogeneity of Variance.
+:::
+
+#### **Computing ANOVAs with Unequal Variance (Violated Homogeneity of Variance Assumption)**
+
+```{r}
+priceANOVA <- lm(AveragePriceTUK ~ region, data=price)
+Anova(priceANOVA, Type='II', white.adjust=TRUE)
+```
+
+### **Assumption: Sample Size**
+
+*An ANOVA requires a sample size of at least 20 per independent variable.*\
+\# of independent variables: 1\
+required number of cases: 20
+
+Number of cases: 1014
+
+```{r}
+str(price)
+```
+
+::: {style="color: #238823"}
+**Meets assumption of adequate sample size.**
+:::
+
+### **Independence**
+
+There is no statistical test for the assumption of independence.
+
+### **Computing Post Hocs with Unequal Variance (Violated Homogeneity of Variance Assumption)**
+
+```{r}
+pairwise.t.test(price$AveragePriceTUK, price$region, p.adjust="bonferroni", pool.sd = FALSE)
+```
+
+::: {style="color: #238823"}
+**The pairwise comparison indicates there is significant difference.**
+:::
+
+------------------------------------------------------------------------
+
+## **Determine Means and Draw Conclusions**
+
+If there is a significant difference after correction, examine the means to interpret results and draw conclusions.
+
+```{r}
+priceMeans <- price %>% group_by(region) %>% summarize(Mean = mean(AveragePrice))
+
+# View tibble sorted by Mean column descending order
+priceMeans[order(-priceMeans$Mean),]
+```
+
+::: {style="color: #0187DE"}
+# Conclusion:
+
+The `Average Price` of avocados differs between the three regions, with Albany being the highest at \$1.56, Seattle at \$1.44, and Houston the lowest at \$1.05.
+:::

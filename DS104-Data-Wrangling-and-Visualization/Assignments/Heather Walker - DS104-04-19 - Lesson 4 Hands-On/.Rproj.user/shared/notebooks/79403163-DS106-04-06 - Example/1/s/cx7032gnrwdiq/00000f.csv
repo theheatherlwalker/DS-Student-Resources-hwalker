@@ -1,0 +1,2 @@
+"0","# QUESTION:"
+"0","# Create a model that will use `mpg` as the response variable, and the other 10 columns of data as potential predictor variables. It is assumed that all 10 predictors don't really belong in the model."

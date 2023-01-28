@@ -1,0 +1,143 @@
+---
+title: "DS105-04-06 - ANOVAs - One Way Between Subjects - Activity in R"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+## Load Libraries
+
+```{r}
+library("dplyr")
+library("rcompanion")
+library("car")
+```
+
+------------------------------------------------------------------------
+
+## Load in Data
+
+```{r}
+youtube <- read.csv("./assets/YouTubeChannels.csv")
+
+  # View the data
+    head(youtube)
+```
+
+------------------------------------------------------------------------
+
+## Question Setup
+
+Is there a difference in the **number of views `Video.views`** compared to all the different **grade categories `Grade`**?
+
+`Grade` categories:
+
+```{r}
+sort(unique(youtube$Grade))
+```
+
+------------------------------------------------------------------------
+
+## Data Wrangling
+
+No data wrangling needed.
+
+------------------------------------------------------------------------
+
+## **Test Assumptions**
+
+### **Assumption: Normality**
+
+Test for the normality of the dependent variable.
+
+```{r}
+plotNormalHistogram(youtube$Video.views)
+```
+
+#### Transform for normality using `Tukey's Ladder of Power`
+
+```{r}
+youtube$Video.viewsTUK <- transformTukey(youtube$Video.views, plotit=FALSE)
+
+plotNormalHistogram(youtube$Video.viewsTUK)
+```
+
+::: {style="color: #238823"}
+**Successfully transformed, meets assumption of Normality.**
+:::
+
+### **Assumption: Homogeneity of Variance**
+
+Using `Bartlett's test` since the data is now transformed close to normal distributed.\
+Homogeneity of Variance is met if `p > .05` - *not significant*.
+
+#### **Bartlett's Test**
+
+Use the function `bartlett.test()`, with the argument of the `y data` separated by a tilde, followed by the `x data`. `data=` argument is the name of the dataset.
+
+```{r}
+bartlett.test(Video.views ~ Grade, data=youtube)
+```
+
+::: {style="color: #D2222D"}
+**Fails assumption of Homogeneity of Variance.**
+
+**`p < .05`**, which means that the data fails the assumption of Homogeneity of Variance.
+:::
+
+#### **Computing ANOVAs with Unequal Variance (Violated Homogeneity of Variance Assumption)**
+
+```{r}
+youtubeANOVA <- lm(Video.viewsTUK ~ Grade, data=youtube)
+Anova(youtubeANOVA, Type='II', white.adjust=TRUE)
+```
+
+### **Assumption: Sample Size**
+
+*An ANOVA requires a sample size of at least 20 per independent variable.*\
+\# of independent variables: 1\
+required number of cases: 20.
+
+Number of cases: 5000
+
+```{r}
+str(youtube)
+```
+
+::: {style="color: #238823"}
+**Meets assumption of adequate sample size.**
+:::
+
+### **Independence**
+
+There is no statistical test for the assumption of independence.
+
+### **Computing Post Hocs with Unequal Variance (Violated Homogeneity of Variance Assumption)**
+
+```{r}
+pairwise.t.test(youtube$Video.viewsTUK, youtube$Grade, p.adjust="bonferroni", pool.sd = FALSE)
+```
+
+::: {style="color: #238823"}
+**The pairwise comparison indicates there is significant difference.**
+:::
+
+------------------------------------------------------------------------
+
+## **Determine Means and Draw Conclusions**
+
+If there is a significant difference after correction, examine the means to interpret results and draw conclusions.
+
+```{r}
+youtubeMeans <- youtube %>% group_by(Grade) %>% summarize(Mean = mean(Video.views))
+
+# View tibble sorted by Mean column descending order
+youtubeMeans[order(-youtubeMeans$Mean),]
+```
+
+::: {style="color: #0187DE"}
+# Conclusion:
+
+The number of views for each `Grade` level varies significantly, with higher grades receiving more views and lower grades receiving fewer views.
+:::

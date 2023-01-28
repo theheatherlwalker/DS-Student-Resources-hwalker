@@ -1,0 +1,71 @@
+---
+title: "DS105-03-07 - Example - Star Wars"
+output: html_notebook
+---
+
+# Goodness of Fit Chi-Squares
+
+> You will use a goodness of fit Chi-Square when you are trying to compare a sample to a population. It is similar in concept to the single sample *t*-test.
+
+------------------------------------------------------------------------
+
+## Load Libraries
+
+```{r}
+library("dplyr")
+```
+
+## Load Data
+
+```{r}
+SW_survey_renamed <- read.csv("./assets/SW_survey_renamed.csv")
+
+  # VIEW THE DATA
+  View(SW_survey_renamed)
+```
+
+## Question Setup
+
+You found something online that mentioned that 90% of people are Star Wars fans, and you want to see if that holds true in your own survey. In this way, you are comparing your sample (the survey) to the population at large (what you read online).
+
+## Data Wrangling
+
+In order to run a goodness of fit Chi-Square, you need the observed values for folks who are fans of Star Wars, and for folks who are not fans of Star Wars. You can easily get those values by aggregating your data using the `dplyr` `summarize()` function for count (`n()`):
+
+```{r}
+SW_survey_renamed %>% group_by(FanYN) %>% summarize(count=n())
+```
+
+You can ignore the missing values in this case, but you'll want to take note of the number of `No`s and the number of `Yes`s.
+
+## Run Analysis
+
+Now you are ready to set up for your analysis!
+
+You will want to define the observed values as vectors, which you got from above:
+
+```{r}
+observed = c(552, 284)
+```
+
+Next, you will define a vector of your expected values. **These expected values must equal 1.** If they don't, you end up with this error when you eventually run your Chi-Square:
+
+    Error in chisq.test(x = observed, p = expected) : 
+      probabilities must sum to 1.
+
+Here is how you will define your expected values.\
+Since you are comparing to the online estimate of 90% Star Wars fans, you will want the Star Wars fans to come first (to match the above, which started with the number of yesses) and you will change 90% to .90:
+
+```{r}
+expected = c(0.90, 0.10)
+```
+
+And now you are ready to run the analysis itself, with the function `chisq.test()`, in which you will define the argument of `x=` with your `observed` frequencies, and in which you will define the argument of `p=` with your expected frequencies:
+
+```{r}
+chisq.test(x = observed, p = expected)
+```
+
+**If the *p* value is less than .05, than your observed and expected values differ.**\
+In this case, this means that the number of Star Wars fans is not 90%.\
+You might conclude, then, that your sample is somewhat confused compared to the overall population.

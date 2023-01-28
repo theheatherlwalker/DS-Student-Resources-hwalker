@@ -1,0 +1,40 @@
+---
+title: "DS106-04-05 - Forward Selection"
+output:
+  html_document:
+    df_print: 
+---
+
+```{r}
+head(mtcars)
+```
+
+```{r}
+# QUESTION:
+# Create a model that will use `mpg` as the response variable, and the other 10 columns of data as potential predictor variables. It is assumed that all 10 predictors don't really belong in the model.
+```
+
+```{r}
+# Create a linear model of all 10 predictor variables.
+fitstart = lm(mpg ~ 1, data = mtcars)
+```
+
+```{r}
+# Summary of model
+summary(fitstart)
+```
+
+```{r}
+# Create a complete forward selection
+step(fitstart, direction = 'forward', scope = (~ cyl + disp + hp + drat + wt + qsec + vs + am + gear + carb))
+
+# IF YOU'VE ALREADY WRITTEN A BACKWARDS ELIMINATION FUNCTION
+# step(fitstart, direction = 'forward', scope = (formula(FitAll)))
+```
+
+```{r}
+# Create a model with only the identified variables
+fitsome2 = lm(mpg ~ wt + cyl + hp, data = mtcars)
+
+summary(fitsome2)w
+```

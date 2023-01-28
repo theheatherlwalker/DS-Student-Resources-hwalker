@@ -1,0 +1,154 @@
+---
+title: "DS105-06-04 - Mixed Measure ANOVA in R Activity"
+output: html_notebook
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+## Load Libraries
+
+```{r}
+library("rcompanion")
+library("car")
+```
+
+------------------------------------------------------------------------
+
+## Load in Data
+
+```{r}
+breakfast <- read.csv("./assets/breakfast.csv")
+
+  # View data
+    head(breakfast)
+```
+
+------------------------------------------------------------------------
+
+## Question Setup
+
+With this data, you will answer the question:
+
+    Did those who ate breakfast in the morning improve their resting metabolic rate from baseline to follow up compared to those who skipped breakfast?  
+
+In order to answer this question, your first x, or independent variable,
+will be the `Treatment.Group` of whether they ate breakfast in the
+morning or not. Your second x will be time, whether it was baseline or
+follow up. Your y, or dependent variable, will be resting metabolic
+rate. As with all ANOVAs, the IV will be categorical, and the DV will be
+continuous.
+
+------------------------------------------------------------------------
+
+## Data Wrangling
+
+Data wrangling for the mixed measures ANOVA is done exactly the same as
+it was for the repeated measures ANOVA.
+
+### Filter Data
+
+```{r}
+breakfast1 <- breakfast[1:33,]
+
+head(breakfast1)
+```
+
+### Reshape Data
+
+```{r}
+keep = c("Participant.Code", "Treatment.Group", "Age..y.", "Sex", "Height..m.", "Baseline.Body.Mass..kg.", "Follow.Up.Body.Mass..kg.")
+
+breakfast2 <- breakfast1[keep]
+
+head(breakfast2)
+```
+
+------------------------------------------------------------------------
+
+## Baseline Data
+
+```{r}
+breakfast3 <- breakfast2[,1:5]
+breakfast3$repdat <- breakfast2$Baseline.Body.Mass..kg.
+breakfast3$contrasts <- "T1"
+head(breakfast3)
+```
+
+## Follow-up Data
+
+```{r}
+breakfast4 <- breakfast2[,1:5]
+breakfast4$repdat <- breakfast2$Follow.Up.Body.Mass..kg.
+breakfast4$contrasts <- "T2"
+head(breakfast4)
+```
+
+Once you have both of those, then you need to `rbind()` them back
+together into one whole dataset:
+
+```{r}
+breakfast5 <- rbind(breakfast3, breakfast4)
+```
+
+Now you are all prepared to run a repeated measures ANOVA, data shaping
+wise.
+
+------------------------------------------------------------------------
+
+## **Testing Assumptions**
+
+The assumptions for a mixed measure ANOVA are the same as the ones you
+learned for a repeated measures ANOVA. The only thing that differs is
+the sample size, because you now have two IVs.
+
+------------------------------------------------------------------------
+
+### **Sample Size**
+
+A mixed measures ANOVA requires a sample size of at least 20 per
+independent variable or time factor. In this case, you only have one
+independent variable, and you also have a factor of time. So, you need
+40 cases. You are a few cases short of this requirement, clocking in at
+only *n* = 33, but for learning purposes, you will proceed. However,
+typically if you did not have a large enough sample size, you would
+either want to simplify your model (remove either the IV or the time
+variable), choose a different analysis, or run a procedure called
+bootstrapping which would re-sample your data until you had a larger
+*n*.
+
+------------------------------------------------------------------------
+
+## Analysis
+
+You will continue to use the `aov()` function, but add some additional
+arguments to it to make it mixed measures.
+
+```{r}
+RManova1 <- aov(repdat~(Treatment.Group*contrasts)+Error(Participant.Code/(contrasts)), breakfast5)
+summary(RManova1)
+```
+
+So what's happening here is that you are calling the `aov()` function on
+the interaction between all of your data factors. First, you are saying
+that you want to see the repeated data of resting metabolic rate by your
+time factor (from baseline to follow-up). That's this part:
+`repdat~(Treatment.Group*contrasts`. Next, you are adding in your error
+term, which is specified in this model by the command `Error()`. In the
+error term, you are placing your subject identifier (which matches the
+pre and the post data together), and you also note that it needs to be
+done for both time factor groups as well. That's what this part of the
+code is doing: `+Error(Participant.Code/(contrasts)`. Finish it all off
+by specifying the dataset at the end and you are good to go. Call
+`summary()` on the results:
+
+------------------------------------------------------------------------
+
+## Post Hocs
+
+After finding such a load of bupkis above, so no need to worry about
+post hocs here!
+
+------------------------------------------------------------------------
+
+# `### END` 

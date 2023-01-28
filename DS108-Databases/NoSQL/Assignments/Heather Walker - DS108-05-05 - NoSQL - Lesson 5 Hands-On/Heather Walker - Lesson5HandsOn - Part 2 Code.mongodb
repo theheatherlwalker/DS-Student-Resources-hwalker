@@ -1,0 +1,135 @@
+db.songs.insertMany([
+{
+  "songId": 1,
+  "title": "Girls Just Want To Have Fun",
+  "details" : { "artist" :  "Cyndi Lauper",
+  "album": "She's So Unusual",
+  "releaseYear": 1983
+}},
+{
+  "songId": 2,
+  "title": "Hips Don't Lie",
+  "details" : { "artist" :  "Shakira feat. Wyclef Jean",
+  "album": "Oral Fixation Vol. 2",
+  "releaseYear": 2006
+}},
+{
+  "songId": 3,
+  "title": "Poker Face",
+  "details" : { "artist" :  "Lady Gaga",
+  "album": "The Fame",
+  "releaseYear": 2008
+}},
+{
+  "songId": 4,
+  "title": "Wannabe",
+  "details" : { "artist" :  "Spice Girls",
+  "album": "Spice",
+  "releaseYear": 1996
+}},
+{
+  "songId": 5,
+  "title": "California Gurls",
+  "details" : { "artist" :  "Katy Perry feat. Snoop Dogg",
+  "album": "Teenage Dream",
+  "releaseYear": 2010
+}},
+{
+  "songId": 6,
+  "title": "Bye, Bye, Bye",
+  "details" : { "artist" :  "NSYNC",
+  "album": "No Strings Attached",
+  "releaseYear": 2000
+}},
+{
+  "songId": 7,
+  "title": "I Will Always Love You",
+  "details" : { "artist" :  "Whitney Houston",
+  "album": "I Will Always Love You: The Best of Whitney Houston",
+  "releaseYear": 2012
+}},
+{
+  "songId": 8,
+  "title": "Baby One More Time",
+  "details" : { "artist" :  "Britney Spears",
+  "album": "Baby One More Time",
+  "releaseYear": 1999
+}},
+{
+  "songId": 9,
+  "title": "Vogue",
+  "details" : { "artist" :  "Madonna",
+  "album": "I'm Breathless",
+  "releaseYear": 1990
+}},
+{
+  "songId": 10,
+  "title": "Rolling in the Deep",
+  "details" : { "artist" :  "Adele",
+  "album": "21",
+  "releaseYear": 2011
+}},
+{
+  "songId": 11,
+  "title": "1234",
+  "details" : { "artist" :  "Feist",
+  "album": "The Reminder",
+  "releaseYear": 2007
+}},
+{
+  "songId": 12,
+  "title": "Elastic Heart",
+  "details" : { "artist" :  "Sia",
+  "album": "The Hunger Games: Catching Fire Soundtrack",
+  "releaseYear": 2015
+}},
+{
+  "songId": 13,
+  "title": "Oops! I Did It Again",
+  "details" : { "artist" :  "Britney Spears",
+  "album": "Oops! I Did It Again",
+  "releaseYear": 2000
+}},
+{
+  "songId": 14,
+  "title": "Bad Romance",
+  "details" : { "artist" :  "Lady Gaga",
+  "album": "The Fame Monster",
+  "releaseYear": 2009
+}},
+{
+  "songId": 15,
+  "title": "Lose Control",
+  "details" : { "artist" :  "Missy Elliot",
+  "album": "The Cookbook",
+  "releaseYear": 2005
+}},
+{
+  "songId": 16,
+  "title": "U Can't Touch This",
+  "details" : { "artist" :  "MC Hammer",
+  "album": "Please Hammer, Don't Hurt 'Em",
+  "releaseYear": 1990
+}},
+{
+  "songId": 17,
+  "title": "Thriller",
+  "details" : { "artist" :  "Michael Jackson",
+  "album": "Thriller",
+  "releaseYear": 1982
+}},
+{
+  "songId": 18,
+  "title": "Single Ladies",
+  "details" : { "artist" :  "Beyonce",
+  "album": "I am... Sasha Fierce",
+  "releaseYear": 2008
+}},
+{
+  "songId": 19,
+  "title": "Rhythm Nation",
+  "details" : { "artist" :  "Janet Jackson",
+  "album": "Janet Jackson's Rhythm Nation 1814",
+  "releaseYear": 1989
+}}
+]);

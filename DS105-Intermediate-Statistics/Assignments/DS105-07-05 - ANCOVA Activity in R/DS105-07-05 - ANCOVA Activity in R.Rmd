@@ -1,0 +1,254 @@
+---
+title: "DS105-07-05 - ANCOVA Activity in R.nb"
+output: html_notebook
+---
+
+# Load Libraries
+
+```{r}
+# install.packages("effects")
+# install.packages("multcomp")
+library("rcompanion")
+library("car")
+library("effects")
+library("multcomp")
+library("tidyverse")
+library("dplyr")
+```
+
+------------------------------------------------------------------------
+
+# Load in Data
+
+```{r}
+graduate_admissions <- read.csv("./data/graduate_admissions.csv")
+
+  # View data
+    head(graduate_admissions)
+```
+
+------------------------------------------------------------------------
+
+# Question Setup
+
+**Does University Rating (`University.Rating`) significantly predict your college GPA (`CGPA`) when holding TOEFL score (`TOEFL.Score`) constant?**
+
+> Compute an ANCOVA to predict a student's college GPA (`CGPA`), holding the TOEFL Score (`TOEFL.Score`) constant and using their university's rating (`University.Rating`) as as a predictor.
+
+------------------------------------------------------------------------
+
+# Data Wrangling
+
+*Ensure that all categorical variables are factors, not integers.*
+
+Are there `null` values?
+
+```{r}
+colSums(is.na(graduate_admissions))
+```
+
+------------------------------------------------------------------------
+
+### Find the column names with `colnames()` function
+
+```{r}
+colnames(graduate_admissions)
+```
+
+------------------------------------------------------------------------
+
+### **Ensure the IV (Independent Variable) is a Factor**
+
+For this question, the IV is `University.Rating`.
+
+```{r}
+str(graduate_admissions$University.Rating)
+```
+
+This variable is an integer, convert to a factor:
+
+```{r}
+graduate_admissions$University.Rating <- as.factor(graduate_admissions$University.Rating)
+
+  # Confirm change to data type
+    str(graduate_admissions$University.Rating)
+```
+
+------------------------------------------------------------------------
+
+### **Ensure the CV (CoVariate) is a Factor**
+
+Covariates can either be categorical or continuous.\
+If you use a categorical CV, it needs to be formatted as factor data, not as an integer.
+
+```{r}
+str(graduate_admissions$TOEFL.Score)
+```
+
+```{r}
+graduate_admissions$TOEFL.Score <- as.factor(graduate_admissions$TOEFL.Score)
+
+  # Confirm change to data type
+    str(graduate_admissions$TOEFL.Score)
+```
+
+------------------------------------------------------------------------
+
+# Testing Assumptions
+
+-   [**Normality**]{style="color: #238823"}
+
+-   [**Homogeneity of Variance**]{style="color: #238823"}
+
+-   [**Homogeneity of Regression Slopes**]{style="color: #D2222D"}
+
+-   [**Sample Size**]{style="color: #238823"}
+
+------------------------------------------------------------------------
+
+### Normality
+
+```{r}
+plotNormalHistogram(graduate_admissions$CGPA)
+```
+
+Looks normal, but could be more normal with a transformation.
+
+#### S**quare transformation**
+
+```{r}
+graduate_admissions$CGPASQ <- graduate_admissions$CGPA * graduate_admissions$CGPA
+
+  # Plot after transformation
+    plotNormalHistogram(graduate_admissions$CGPASQ)
+```
+
+::: {style="color: #238823"}
+### **Meets assumption: Normality**
+
+Meets the assumption of normality (after transformation).
+:::
+
+------------------------------------------------------------------------
+
+### **Homogeneity of Variance**
+
+```{r}
+leveneTest(CGPASQ~University.Rating, data=graduate_admissions)
+```
+
+::: {style="color: #238823"}
+### Meets assumption: **Homogeneity of Variance**
+
+***`p`*** **`> .05`** **---** **This test is not significant,** indicating that the data meets the assumption of homogeneity of variance.
+:::
+
+------------------------------------------------------------------------
+
+### **Homogeneity of Regression Slopes**
+
+Run a one-way ANOVA, with your covariate as the IV and the DV for your ANCOVA.\
+If the *F* test is non-significant, the data meets the assumption of homogeneity of regression slopes.
+
+```{r}
+Homogeneity_RegrSlp = lm(CGPASQ~Research, data=graduate_admissions)
+
+anova(Homogeneity_RegrSlp)
+```
+
+::: {style="color: #D2222D"}
+### Fails assumption: Homogeneity of Regression Slopes
+
+***`p`*** **`< .05` --- The *p* values is significant**, indicating that the data does not meet the assumption of homogeneity of regression slopes.
+:::
+
+------------------------------------------------------------------------
+
+### Sample Size
+
+The last assumption for ANCOVAs is sample size. There has to be at least 20 cases for every IV or CV. Since you will have one IV and one CV, you will need at least 40 rows of data. In this case, you have 400 cases, so this assumption is more than adequately met!
+
+IVs or CVs: 2 (`TOEFL.Score`, `University.Rating`)
+
+```{r}
+str(graduate_admissions)
+```
+
+::: {style="color: #238823"}
+### Meets assumption: Sample Size
+
+Requirement: 20 samples per variable = 20 \* 2 = 40 \< **400 observations present in data**.
+:::
+
+------------------------------------------------------------------------
+
+# Running the Analysis
+
+Run an ANCOVA using the same linear model format that you have used for regressions, but playing with the model terms some.
+
+1.  DV: `CGPA`
+2.  Covariate(s): `TOEFL.Score`
+3.  Independent Variable: `University.Rating`
+
+```{r}
+ANCOVA = lm(CGPA~TOEFL.Score + University.Rating*TOEFL.Score, data=graduate_admissions)
+
+anova(ANCOVA)
+```
+
+Looking at it, **you can see that there is a significant effect of the covariate, `Research`, and a significant effect of the independent variable, `University.Rating`, on a student's chance of admission to graduate school.**
+
+In addition, there is an interaction between `Research` and `University.Rating`, indicating that those things combined also form a significant pattern that predicts admission to graduate school.
+
+::: {style="color: #238823"}
+### Analysis:
+
+-   `TOEFL.Score` has a significant affect ( *p* \< .05 ) on `CGPA`
+
+-   `University.Rating` has a significant affect ( *p* \< .05 ) on `CGPA`
+
+-   [`TOEFL.Score` and `University.Rating` combined do NOT have form a significant pattern to predict `CGPA`.]{style="color: #D2222D"}
+:::
+
+------------------------------------------------------------------------
+
+# Post Hocs
+
+Where do the differences lie? To answer those questions, you need to follow up with a post hoc.\
+For an ANCOVA, you will still run a post hoc with the Tukey's correction, but you will need to do so using functions from the `multcomp` package instead because you now need to handle the covariate and interaction effects. You will do this using the `glht()` function.
+
+The independent variable will go in the second second of parentheses before the equals sign. `linfct=mcp` is standard code that you will use routinely.
+
+```{r}
+postHocs <- glht(ANCOVA,linfct=mcp("University.Rating" = "Tukey"))
+
+summary(postHocs)
+```
+
+Reference the `Pr(>|t|)` column for the *p* values associated with each of these pairwise *t*-tests.
+
+::: {style="color: #238823"}
+## Post Hocs:
+
+-   There is a significant difference between **`University.Rating = 1`** and all other ratings
+
+-   There is a significant difference between **`University.Rating = 2`** and all other ratings
+
+-   [There are no significant differences between **`University.Ratings = 3, 4, or 5`**]{style="color: #D2222D"}
+:::
+
+------------------------------------------------------------------------
+
+# Determine Means and Draw Conclusions
+
+```{r}
+adjMeans <- effect("University.Rating", ANCOVA)
+
+adjMeans
+```
+
+::: {style="color: #0187DE"}
+# Conclusion:
+
+Undergraduate University Rating (`University.Rating`) cannot significantly predict your college GPA (`CGPA`).\
+:::

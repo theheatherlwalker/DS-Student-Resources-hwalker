@@ -1,0 +1,175 @@
+---
+title: "DS105-06-07 - Lesson 6 Hands-On - in R"
+output: html_notebook
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+## Install Packages
+
+```{r}
+install.packages("rcompanion")
+install.packages("car")
+install.packages("IDPmisc")
+install.packages("dplyr")
+install.packages("tidyverse")
+```
+
+## Load Libraries
+
+```{r}
+library("rcompanion")
+library("car")
+library("IDPmisc")
+library("dplyr")
+library(tidyverse)
+```
+
+------------------------------------------------------------------------
+
+## Load in Data
+
+```{r}
+suicide <- read.csv("./assets/suicide.csv")
+
+  # View data
+    head(suicide)
+```
+
+```{r}
+str(suicide)
+```
+
+------------------------------------------------------------------------
+
+## Question Setup
+
+You will determine whether suicide rates (`suicides/100k pop`) has
+changed over the years (`year`), and see if the `generation` has any
+influence. To do so, you will be using a mixed measures ANOVA, since
+there is both a repeated time element and a between subjects element.
+
+------------------------------------------------------------------------
+
+## Data Wrangling
+
+Data wrangling for the mixed measures ANOVA is done exactly the same as
+it was for the repeated measures ANOVA.
+
+------------------------------------------------------------------------
+
+## Baseline Data
+
+```{r}
+breakfast3 <- breakfast2[,1:5]
+breakfast3$repdat <- breakfast2$Baseline.Body.Mass..kg.
+breakfast3$contrasts <- "T1"
+head(breakfast3)
+```
+
+## Follow-up Data
+
+```{r}
+breakfast4 <- breakfast2[,1:5]
+breakfast4$repdat <- breakfast2$Follow.Up.Body.Mass..kg.
+breakfast4$contrasts <- "T2"
+head(breakfast4)
+```
+
+Once you have both of those, then you need to `rbind()` them back
+together into one whole dataset:
+
+```{r}
+breakfast5 <- rbind(breakfast3, breakfast4)
+```
+
+------------------------------------------------------------------------
+
+## **Testing Assumptions**
+
+------------------------------------------------------------------------
+
+### Assumption: Normality
+
+```{r}
+plotNormalHistogram(suicide$suicides.100k.pop)
+```
+
+### Transformation: Square Root
+
+```{r}
+suicide$suicides.100k.popSQRT <- sqrt(suicide$suicides.100k.pop)
+
+plotNormalHistogram(suicide$suicides.100k.popSQRT)
+```
+
+### Transformation: Logarithmic
+
+```{r}
+suicide$suicides.100k.popLOG <- log(suicide$suicides.100k.pop)
+
+# Remove `null` values after getting an error graphing LOG transformation.
+suicide2 <- NaRV.omit(suicide)
+plotNormalHistogram(suicide2$suicides.100k.popLOG)
+```
+
+::: {style="color: #238823"}
+**After Transformation, meets assumption of Normality.**
+:::
+
+------------------------------------------------------------------------
+
+### Assumption: Homogeneity of Variance
+
+```{r}
+leveneTest(suicides.100k.popLOG ~ generation, data=suicide2)
+```
+
+::: {style="color: #D2222D"}
+**Fails assumption of Homogeneity of Variance.**
+
+**`p < .05`**, which means that the data fails the assumption of
+Homogeneity of Variance.
+:::
+
+------------------------------------------------------------------------
+
+### **Assumption: Sample Size**
+
+A mixed measures ANOVA requires a sample size of at least 20 per
+independent variable or time factor.
+
+We have 1 IV and 1 factor of time = 2 x 20 = need 40 minimum. We have
+`27820` observations.
+
+```{r}
+str(suicide)
+```
+
+::: {style="color: #238823"}
+**Meets the assumption of Sample Size.**
+:::
+
+------------------------------------------------------------------------
+
+## Analysis
+
+You will continue to use the `aov()` function, but add some additional
+arguments to it to make it mixed measures.
+
+```{r}
+RManova <- aov(suicides.100k.popLOG~(generation*year)+Error(country/(year)), suicide2)
+summary(RManova)
+```
+
+::: {style="color: #0187DE"}
+# Conclusion:
+
+***`p`*** **`< .5`** which indicates there *is a significant effect* of
+**`time`** and **`generation`** on suicides rates.
+:::
+
+------------------------------------------------------------------------
+
+# `### END`

@@ -1,0 +1,127 @@
+{
+  "main": {
+    "id": "ffab509d4480ff78",
+    "type": "split",
+    "children": [
+      {
+        "id": "13a18b83478179a0",
+        "type": "leaf",
+        "state": {
+          "type": "empty",
+          "state": {}
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "9263541ef97df23d",
+    "type": "split",
+    "children": [
+      {
+        "id": "10cf9e8fe91ba63f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d2c8bb599733430c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "16b1b1143a526b04",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "1c0542f46f24e542",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "82bd6c43f0cd4168",
+    "type": "split",
+    "children": [
+      {
+        "id": "94509f937dae8f93",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "563c11425957fa41",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "1be05d29041bc89f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "8f220e5184a47ca8",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "e5406609d9eea148",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "13a18b83478179a0",
+  "lastOpenFiles": [
+    "DS102-08-08 - Lesson 8 Practice Hands-On.md"
+  ]
+}

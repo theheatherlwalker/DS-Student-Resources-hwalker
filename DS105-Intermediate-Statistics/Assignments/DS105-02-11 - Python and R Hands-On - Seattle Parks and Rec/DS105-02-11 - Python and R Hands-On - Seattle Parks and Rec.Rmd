@@ -1,0 +1,161 @@
+---
+title: "DS105-02-11 - Python and R Hands-On - Seattle Parks and Rec"
+output:
+  html_document:
+    df_print: paged
+---
+
+### Load Packages
+
+```{r}
+library("rcompanion")
+library("IDPmisc")
+```
+
+### Load Data
+
+```{r}
+parksrec <- read.csv("./assets/Seattle_ParksnRec.csv")
+```
+
+### View Data
+
+```{r}
+View(parksrec)
+```
+
+------------------------------------------------------------------------
+
+### Finding Column Names
+
+```{r}
+colnames(parksrec)
+```
+
+------------------------------------------------------------------------
+
+# Variable: `X..of.trips.Fall`
+
+::: {style="color: blue"}
+positively skewed -\> Transformed with Tukey's Ladder of Power
+:::
+
+```{r}
+# PLOT NORMAL HISTORGRAM FOR VARIABLE
+plotNormalHistogram(parksrec$"X..of.trips.Fall")
+```
+
+```{r}
+# TRANSFORM:
+parksrec$"X..of.trips.FallTUK" <- transformTukey(parksrec$"X..of.trips.Fall", plotit=FALSE)
+
+# RUN HISTOGRAM AGAIN
+plotNormalHistogram(parksrec$"X..of.trips.FallTUK")
+```
+
+------------------------------------------------------------------------
+
+# Variable: `X..of.participants.Fall`
+
+::: {style="color: blue"}
+positively skewed -\> Transformed with Tukey's Ladder of Power
+:::
+
+```{r}
+# PLOT NORMAL HISTORGRAM FOR VARIABLE
+plotNormalHistogram(parksrec$"X..of.participants.Fall")
+```
+
+```{r}
+# TRANSFORM:
+parksrec$"X..of.participants.FallTUK" <- transformTukey(parksrec$"X..of.participants.Fall", plotit=FALSE)
+
+# RUN HISTOGRAM AGAIN
+plotNormalHistogram(parksrec$"X..of.participants.FallTUK")
+```
+
+------------------------------------------------------------------------
+
+# Variable: `X..of.trips.per.year`
+
+::: {style="color: blue"}
+positively skewed -\> Transformed with Tukey's Ladder of Power
+:::
+
+```{r}
+# PLOT NORMAL HISTORGRAM FOR VARIABLE
+plotNormalHistogram(parksrec$"X..of.trips.per.year")
+```
+
+```{r}
+# TRANSFORM:
+parksrec$"X..of.trips.per.yearTUK" <- transformTukey(parksrec$"X..of.trips.per.year", plotit=FALSE)
+
+# RUN HISTOGRAM AGAIN
+plotNormalHistogram(parksrec$"X..of.trips.per.yearTUK")
+```
+
+------------------------------------------------------------------------
+
+# Variable: `X..of.participants.per.Year`
+
+::: {style="color: blue"}
+positively skewed -\> Transformed with Tukey's Ladder of Power
+:::
+
+```{r}
+# PLOT NORMAL HISTORGRAM FOR VARIABLE
+plotNormalHistogram(parksrec$"X..participants.per.year")
+```
+
+```{r}
+# TRANSFORM:
+parksrec$"X..participants.per.yearTUK" <- transformTukey(parksrec$"X..participants.per.year", plotit=FALSE)
+
+# RUN HISTOGRAM AGAIN
+plotNormalHistogram(parksrec$"X..participants.per.yearTUK")
+```
+
+------------------------------------------------------------------------
+
+# Variable: `increase.decrease.of.prior.year`
+
+::: {style="color: blue"}
+positively skewed, but close to normal -\> Transformed with Tukey's Ladder of Power
+:::
+
+```{r}
+# PLOT NORMAL HISTORGRAM FOR VARIABLE
+plotNormalHistogram(parksrec$"increase.decrease.of.prior.year")
+```
+
+```{r}
+# TRANSFORM:
+parksrec$"increase.decrease.of.prior.yearTUK" <- transformTukey(parksrec$"increase.decrease.of.prior.year", plotit=FALSE)
+
+# RUN HISTOGRAM AGAIN
+plotNormalHistogram(parksrec$"increase.decrease.of.prior.yearTUK")
+```
+
+------------------------------------------------------------------------
+
+# Variable: `Average...people.per.trip`
+
+::: {style="color: blue"}
+just barely positively skewed -\> Transformed with Tukey's Ladder of Power
+:::
+
+```{r}
+# PLOT NORMAL HISTORGRAM FOR VARIABLE
+plotNormalHistogram(parksrec$"Average...people.per.trip")
+```
+
+```{r}
+# TRANSFORM:
+parksrec$"Average...people.per.tripTUK" <- transformTukey(parksrec$"Average...people.per.trip", plotit=FALSE)
+
+# RUN HISTOGRAM AGAIN
+plotNormalHistogram(parksrec$"Average...people.per.tripTUK")
+```
+
+# `### END`

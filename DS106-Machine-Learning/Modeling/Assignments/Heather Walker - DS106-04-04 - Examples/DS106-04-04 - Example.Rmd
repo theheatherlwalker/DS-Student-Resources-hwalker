@@ -1,0 +1,37 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+head(mtcars)
+```
+
+```{r}
+# QUESTION:
+# Create a model that will use `mpg` as the response variable, and the other 10 columns of data as potential predictor variables. It is assumed that all 10 predictors don't really belong in the model.
+```
+
+```{r}
+# Create a linear model of all 10 predictor variables.
+FitAll = lm(mpg ~ ., data = mtcars)
+```
+
+```{r}
+# Summary of model
+summary(FitAll)
+```
+
+```{r}
+step(FitAll, direction = 'backward')
+```
+
+```{r}
+# Create new model with just the un-eliminated variables:
+fitsome = lm(mpg ~ am + qsec + wt, data = mtcars)
+
+# Summary of model
+summary(FitSome)
+```

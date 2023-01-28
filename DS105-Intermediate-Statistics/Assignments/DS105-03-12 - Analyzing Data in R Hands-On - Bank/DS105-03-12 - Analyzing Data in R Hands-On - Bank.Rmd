@@ -1,0 +1,167 @@
+---
+title: "DS105-03-12 - Analyzing Data in R Hands-On - Bank"
+output: html_notebook
+---
+
+### Requirements:
+
+> For each part, check and correct for assumptions if possible, perform the appropriate categorical data analysis in R, and provide a one-sentence conclusion at the bottom of your program files about the analysis you performed.
+
+------------------------------------------------------------------------
+
+## Load Libraries
+
+```{r}
+install.packages("tidyverse")
+library("gmodels")
+library("tidyr")
+library("tidyverse")
+```
+
+## Load Data
+
+```{r}
+loans <- read.csv("./assets/loans.csv")
+
+  # VIEW THE DATA
+  View(loans)
+```
+
+------------------------------------------------------------------------
+
+# Part 1: 
+
+## Question Setup
+
+`Does the term of the loan influence loan status? If so, how?`
+
+## Data Wrangling
+
+The `term` column is formatted as "36 months" but doesn't needed to be recoded because it is a categorical variable.
+
+## Test assumptions and run analysis
+
+```{r}
+CrossTable(loans$term, loans$loan_status, fisher=TRUE, chisq = TRUE, expected = TRUE, sresid=TRUE, format="SPSS")
+```
+
+## Interpret Results
+
+-   `p < 0.5` indicates significance.
+
+-   Loan term *does* influence loan status.
+
+-   Loans with term of `36 months` are more likley to be fully paid off.
+
+------------------------------------------------------------------------
+
+# Part 2:
+
+## Question Setup
+
+`How has the ability to own a home changed after 2009?`
+
+## Data Wrangling
+
+#### Recode by `Year` for McNemar Chi-Square:
+
+Reformat the `Date` column into a new column, \
+Isolate `Year` from `Date` and add as a new column.
+
+```{r}
+loans$DateR <- as.Date(paste(loans$Date), "%m/%d/%Y")
+DateR <- c(loans$DateR)
+loans$DateYear <- format(DateR, format="%Y")
+View(loans)
+```
+
+```{r}
+loans$DateYearR <- NA
+loans$DateYearR [loans$DateYear < "2009"] <- 0
+loans$DateYearR [loans$DateYear == "2009"] <- 0
+loans$DateYearR [loans$DateYear > "2009"] <- 1
+```
+
+#### Recode `Own` vs. `Rent`
+
+```{r}
+loans$RentvsOwn <- NA
+loans$RentvsOwn[loans$home_ownership == "RENT"] <- 0
+loans$RentvsOwn[loans$home_ownership == "OWN"] <- 1
+```
+
+## Test assumptions and run analysis
+
+```{r}
+CrossTable(loans$RentvsOwn, loans$DateYearR, fisher=TRUE, chisq = TRUE, mcnemar = TRUE, expected = TRUE, sresid=TRUE, format="SPSS")
+```
+
+#### Check assumption of Expected Frequencies
+
+In order to meet the assumption for the McNemar Chi-Square, you will need to have at least 5 expected per cell. **Has met this assumption.**
+
+## Interpret Results
+
+-   `p < 0.5` indicates significance.
+
+-   There *is a difference* in the ability to own a home after 2009.
+
+## Post Hocs
+
+None of the standardized residuals are over 2. This indicates that the test determined that these results are similar enough that it is not significant.
+
+     2.505% |   11.422%
+
+------------------------------------------------------------------------
+
+# Part 3: 
+
+## Question Setup
+
+The news just ran a story that only 15% of homes are fully paid for in America, and that another 10% have given up on paying it back, so the bank has "charged off" the loan.
+
+`Does it seem likely that the data for this hands-on came from the larger population of America?`
+
+## Data Wrangling
+
+In order to run a goodness of fit Chi-Square, you need the observed values for:\
+- home loans that are paid in full\
+- home loans that are "charged off"
+
+Get these values by aggregating your data using the `dplyr` `summarize()` function for count (`n()`):
+
+```{r}
+loans %>% group_by(loan_status) %>% summarize(count=n())
+```
+
+## Run Analysis
+
+Define the observed values as vectors:
+
+```{r}
+# ORDER: Charged Off, Current, Fully Paid
+observed = c(3282, 502, 18173)
+```
+
+Define a vector of expected values. **These expected values must equal 1.** \
+From story, "Fully Paid" was `15%` or `.15`, while "Charged Off" was `10%` or `.1`
+
+```{r}
+# ORDER: Charged Off, Current, Fully Paid
+expected = c(0.1, .75, 0.15)
+```
+
+Run the analysis with the function `chisq.test()`, in which you will define the argument of `x=` with your `observed` frequencies, and in which you will define the argument of `p=` with your expected frequencies:
+
+```{r}
+chisq.test(x = observed, p = expected)
+```
+
+## Interpret Results
+
+**`The p value is less than .05` -\> the observed and expected values differ.**\
+*It does NOT seem likely* that this sample came from the larger population of America.
+
+------------------------------------------------------------------------
+
+# `### END`

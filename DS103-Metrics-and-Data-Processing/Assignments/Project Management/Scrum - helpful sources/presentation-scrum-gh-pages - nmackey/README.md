@@ -1,0 +1,1 @@
+reveal.js presentation on SCRUM based on the book SCRUM:The Art of Doing Twice the Work in Half the Time by JJ Sutherland.

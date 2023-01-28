@@ -1,0 +1,2 @@
+"0","# Create a linear model of all 10 predictor variables."
+"0","fitstart = lm(mpg ~ 1, data = mtcars)"

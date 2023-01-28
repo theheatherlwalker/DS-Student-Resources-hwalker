@@ -1,0 +1,113 @@
+---
+title: "DS105-05-07 - ANOVAs - Honey Production Practice Hands-On"
+output: html_notebook
+---
+
+## Load Libraries
+
+```{r}
+#install.packages("fastR2")
+#install.packages("car")
+library("rcompanion")
+library("fastR2")
+library("car")
+library("dplyr")
+```
+
+------------------------------------------------------------------------
+
+## Load in Data
+
+```{r}
+honey <- read.csv("./assets/honey.csv")
+
+  # View data
+    head(honey)
+```
+
+------------------------------------------------------------------------
+
+## Question Setup
+
+**Has total honey production (`totalprod`) changed over the years (`year`)?**
+
+------------------------------------------------------------------------
+
+## Data Wrangling
+
+### Filter Data
+
+```{r}
+honey$year <- as.character(honey$year)
+honey$year <- as.factor(honey$year)
+
+head(honey)
+```
+
+------------------------------------------------------------------------
+
+## **Test Assumptions**
+
+### **Assumption: Normality**
+
+You only need to test for the normality of the dependent variable, but you need to do it at both timepoints. So scoot on back to `breakfast2`, which is the dataset you truncated but had not yet reshaped.
+
+```{r}
+plotNormalHistogram(honey$totalprod)
+```
+
+```{r}
+honey$totalprodTUK <- transformTukey(honey$totalprod, plotit=FALSE)
+
+plotNormalHistogram(honey$totalprodTUK)
+```
+
+::: {style="color: #238823"}
+**Meets assumption of Normality.**
+:::
+
+\
+**Assumption: Homogeneity of Variance**
+
+```{r}
+leveneTest(totalprodTUK ~ year, data=honey)
+```
+
+::: {style="color: #238823"}
+**Meets assumption of Homogeneity of Variance.** \
+**`p > .05`**, which means that the data meets the assumption of Homogeneity of Variance.
+:::
+
+### Sample Size
+
+A repeated measures ANOVA requires a sample size of at least 20 per independent variable.
+
+```{r}
+str(honey)
+```
+
+::: {style="color: #238823"}
+**Meets assumption of adequate sample size.**
+:::
+
+------------------------------------------------------------------------
+
+## **Analysis**
+
+You will continue to use the `aov()` function, but add some additional arguments to it to make it repeated measures.
+
+```{r}
+RManova <- aov(totalprodTUK~year+Error(state), honey)
+summary(RManova)
+```
+
+```{r}
+RManova <- aov(log(totalprod)~year, honey)
+summary(RManova)
+```
+
+::: {style="color: #0187DE"}
+# Conclusion:
+
+***`p`*** **`< .5`**, which indicates ***there is a significant effect*** of year on total honey production.
+:::

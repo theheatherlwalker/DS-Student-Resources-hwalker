@@ -1,0 +1,29 @@
+---
+title: "DS106-04-06 - Hybrid Stepwise"
+output:
+  html_document:
+    df_print: 
+---
+
+```{r}
+head(mtcars)
+```
+
+```{r}
+# QUESTION:
+# Create a model that will use `mpg` as the response variable, and the other 10 columns of data as potential predictor variables. It is assumed that all 10 predictors don't really belong in the model.
+```
+
+```{r}
+# Create a linear model of all 10 predictor variables.
+fitstart = lm(mpg ~ 1, data = mtcars)
+```
+
+```{r}
+# Summary of model
+summary(fitstart)
+```
+
+```{r}
+step(fitstart, direction="both", scope=formula(FitAll))
+```

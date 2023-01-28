@@ -1,0 +1,218 @@
+---
+title: "DS105-07-05 - ANCOVA Activity in R.nb"
+output: html_notebook
+---
+
+# Load Libraries
+
+```{r}
+library("rcompanion")
+library("car")
+library("effects")
+library("multcomp")
+library("tidyverse")
+library("dplyr")
+```
+
+------------------------------------------------------------------------
+
+# Load in Data
+
+```{r}
+cellPhone <- read.csv("./data/cellPhone.csv")
+
+  # View data
+    head(cellPhone)
+```
+
+------------------------------------------------------------------------
+
+# Question Setup
+
+Many folks with international relatives often find themselves calling at odd hours to fit typical schedules in other time zones.
+
+How does the presence or absence of an international phone plan (`International.Plan`) influence the use of nighttime minutes (`Night.Mins`), holding whether or not the client has a voicemail plan (`vMail.Plan`) constant?
+
+------------------------------------------------------------------------
+
+# Data Wrangling
+
+*NOTE: Ensure that all categorical variables are factors, not integers.*
+
+------------------------------------------------------------------------
+
+Are there `null` values?
+
+```{r}
+colSums(is.na(cellPhone))
+```
+
+------------------------------------------------------------------------
+
+### Find the column names with `colnames()` function
+
+```{r}
+colnames(cellPhone)
+```
+
+------------------------------------------------------------------------
+
+### **Ensure the IV (Independent Variable) is a Factor**
+
+For this question, the IV is `International.Plan` .
+
+```{r}
+str(cellPhone$International.Plan)
+```
+
+This variable is an string, convert to a factor:
+
+```{r}
+cellPhone$International.Plan <- as.factor(cellPhone$International.Plan)
+
+  # Confirm change to data type
+    str(cellPhone$International.Plan)
+```
+
+------------------------------------------------------------------------
+
+### **Ensure the CV (CoVariate) is a Factor**
+
+Covariates can either be categorical or continuous.\
+If you use a categorical CV, it needs to be formatted as factor data, not as an integer.
+
+```{r}
+str(cellPhone$vMail.Plan)
+```
+
+This variable is an string, convert to a factor:
+
+```{r}
+cellPhone$vMail.Plan <- as.factor(cellPhone$vMail.Plan)
+
+  # Confirm change to data type
+    str(cellPhone$vMail.Plan)
+```
+
+------------------------------------------------------------------------
+
+# Testing Assumptions
+
+-   [**Normality**]{style="color: #238823"}
+
+-   [**Homogeneity of Variance**]{style="color: #238823"}
+
+-   [**Homogeneity of Regression Slopes**]{style="color: #238823"}
+
+-   [**Sample Size**]{style="color: #238823"}
+
+------------------------------------------------------------------------
+
+### Normality
+
+```{r}
+plotNormalHistogram(cellPhone$Night.Mins)
+```
+
+::: {style="color: #238823"}
+### **Meets assumption: Normality**
+
+Meets the assumption of normality, no need for transformation!
+:::
+
+------------------------------------------------------------------------
+
+### **Homogeneity of Variance**
+
+```{r}
+leveneTest(Night.Mins~International.Plan, data=cellPhone)
+```
+
+::: {style="color: #238823"}
+### Meets assumption: **Homogeneity of Variance**
+
+***`p`*** **`> .05`** **---** **This test is not significant,** indicating that the data meets the assumption of homogeneity of variance.
+:::
+
+------------------------------------------------------------------------
+
+### **Homogeneity of Regression Slopes**
+
+Run a one-way ANOVA, with your covariate as the IV and the DV for your ANCOVA.\
+If the *F* test is non-significant, the data meets the assumption of homogeneity of regression slopes.
+
+```{r}
+Homogeneity_RegrSlp = lm(Night.Mins~vMail.Plan, data=cellPhone)
+
+anova(Homogeneity_RegrSlp)
+```
+
+::: {style="color: #238823"}
+### Meets assumption: Homogeneity of Regression Slopes
+
+***`p`*** **`> .05` --- This test is not significant**, indicating that the data does meet the assumption of homogeneity of regression slopes.
+:::
+
+------------------------------------------------------------------------
+
+### Sample Size
+
+The last assumption for ANCOVAs is sample size. There has to be at least 20 cases for every IV or CV. Since you will have one IV and one CV, you will need at least 40 rows of data. In this case, you have 400 cases, so this assumption is more than adequately met!
+
+IVs or CVs: 2 ( `International.Plan`, `vMail.Plan` )
+
+```{r}
+str(cellPhone)
+```
+
+::: {style="color: #238823"}
+### Meets assumption: Sample Size
+
+Requirement: 20 samples per variable = 20 \* 2 = 40 \< **4617 observations present in data**.
+:::
+
+------------------------------------------------------------------------
+
+# Running the Analysis
+
+Run an ANCOVA using the same linear model format that you have used for regressions, but playing with the model terms some.
+
+1.  DV: `Night.Mins`
+2.  Covariate(s): `vMail.Plan`
+3.  Independent Variable: `International.Plan`
+
+```{r}
+ANCOVA = lm(Night.Mins~vMail.Plan + International.Plan*vMail.Plan, data=cellPhone)
+
+anova(ANCOVA)
+```
+
+Looking at it, **you can see that there is a significant effect of the covariate, `Research`, and a significant effect of the independent variable, `University.Rating`, on a student's chance of admission to graduate school.**
+
+In addition, there is an interaction between `Research` and `University.Rating`, indicating that those things combined also form a significant pattern that predicts admission to graduate school.
+
+::: {style="color: #D2222D"}
+### Analysis:
+
+-   **`vMail.Plan`** does NOT have a significant effect ( *p* \> .05 ) on **`Night.Mins`**
+
+-   **`International.Plan`** does NOT have a significant effect ( *p* \> .05 ) on **`Night.Mins`**
+
+-   **`International.Plan`** and **`vMail.Plan`** combined do NOT have a significant effect ( P \> .05) on **`Night.Mins`**
+:::
+
+------------------------------------------------------------------------
+
+# Determine Means and Draw Conclusions
+
+```{r}
+adjMeans <- effect("International.Plan", ANCOVA)
+
+adjMeans
+```
+
+::: {style="color: #0187DE"}
+# Conclusion:
+
+**An international cell phone plan does NOT result in increase night minutes usage**, regardless of whether the customer also has a voice mail plan.
+:::

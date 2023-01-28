@@ -1,0 +1,232 @@
+---
+title: "DS105-08-06 - MANOVA in R Hands-On"
+output: html_notebook
+---
+
+# Load Libraries
+
+The MANOVA function comes in the base package of R, so the libraries that you will need to load are all related to assumption testing. You will need the following: `mvnormtest` to test for multivariate normality, and `car` to test for homogeneity of variance.
+
+```{r}
+# install.packages("mvnormtest")
+library("mvnormtest")
+library("car")
+```
+
+# Load Data
+
+```{r}
+heartAttacks <- read.csv("./data/heartAttacks.csv")
+
+  # View data
+    head(heartAttacks)
+```
+
+# Question Setup
+
+Please answer the following question with this data:
+
+<div>
+
+It is well-known that men are more likely to have heart attacks than women.\
+How does gender (`sex`) influence some of the heart attack predictors like resting blood pressure (`trestbps`) and cholesterol (`chol`)?
+
+</div>
+
+**Independent Variable:** Gender ( `sex` )\
+**Dependent Variables:** Resting Blood Pressure ( `trestbps` ), Cholesterol ( `chol` )
+
+------------------------------------------------------------------------
+
+# Data Wrangling
+
+To test for multivariate normality,
+
+1.  Create a dataset containing only the *dependent variables*
+
+2.  Ensure that the dependent variables dataset is in a *matrix format*, and
+
+3.  Ensure that the dependent variables are *numeric*
+
+4.  Limit your data to 5,000 rows (the test for normality can only handle 5,000 records)
+
+### Ensure Dependent Variables are Numeric
+
+Check the structure of the data to see what format the dependent variables are in:
+
+```{r}
+str(heartAttacks$trestbps)
+str(heartAttacks$chol)
+```
+
+::: {style="color: #238823"}
+**The dependent variables are already integers (numeric format).**
+:::
+
+### Subsetting
+
+Keep only the dependent variables:
+
+```{r}
+keeps <- c("trestbps", "chol")
+heartAttacks1 <- heartAttacks[keeps]
+```
+
+Then limit the number of rows to 5000:
+
+```{r}
+heartAttacks2 <- heartAttacks1[1:5000,]
+
+  # Confirm the limited dataset
+    str(heartAttacks2)
+```
+
+### Format data set as a Matrix
+
+```{r}
+heartAttacks3 <- as.matrix(heartAttacks2)
+
+  # Confirm structure change of the dataset
+    is.matrix(heartAttacks3)
+```
+
+Now ready to perform the assumptions test for multivariate normality on `heartAttacks3`.
+
+------------------------------------------------------------------------
+
+# Test Assumptions
+
+### **Sample Size**
+
+Requirement:
+
+-   at least 20 for 1 independent variable
+
+-   in each cell, the number of cases \> number of dependent variables
+
+```{r}
+str(heartAttacks)
+```
+
+::: {style="color: #238823"}
+### Meets assumption: Sample Size
+
+Requirement: 20 samples per Independent Variable = 20, \
+at least 2 cases per cell for 2 Dependent Variables. \
+**303 observations present in data**.
+:::
+
+------------------------------------------------------------------------
+
+### **Multivariate Normality**
+
+To test for multivariate normality, first drop any missing values:
+
+```{r}
+heartAttacks4 <- na.omit(heartAttacks3)
+```
+
+Test the dataset with `Wilks-Shapiro test`:
+
+```{r}
+mshapiro.test(t(heartAttacks4))
+```
+
+::: {style="color: #D2222D"}
+### Violates assumption: Multivariate Normality
+
+**The *p* value is significant at *p* \< .05**, indicating that the data violates the assumption of multivariate normality.
+:::
+
+------------------------------------------------------------------------
+
+### Homogeneity of Variance
+
+Test for homogeneity of variance of both dependent variables with `Levene's Test`.
+
+#### **Dependent Variable: `trestbps`**
+
+```{r}
+leveneTest(heartAttacks$trestbps, heartAttacks$sex, data=heartAttacks)
+```
+
+::: {style="color: #238823"}
+#### Meets assumption: Homogeneity of Variance
+
+**The *p* value is NOT significant at *p* \> .05**, indicating that the data meets the assumption of homogeneity of variance.
+:::
+
+#### **Dependent Variable: `chol`**
+
+```{r}
+leveneTest(heartAttacks$chol, heartAttacks$sex, data=chol)
+```
+
+::: {style="color: #D2222D"}
+#### **Violates assumption: Homogeneity of Variance**
+
+**The *p* value is significant at *p* \< .05**, indicating that the data violates the assumption of homogeneity of variance.
+:::
+
+------------------------------------------------------------------------
+
+### **Absence of Multicollinearity**
+
+Typically, multicollinearity can be assessed simply by running correlations of your dependent variables with each other. A general rule of thumb is that anything above approximately .7 for correlation (i.e. a strong correlation) indicates the presence of multicollinearity.
+
+Check out the correlation between dependent variables with a simple `cor.test()` function:
+
+```{r}
+cor.test(heartAttacks$trestbps, heartAttacks$chol, method="pearson", use="complete.obs")
+```
+
+::: {style="color: #238823"}
+### Meets assumption: **Absence of Multicollinearity**
+
+**The variables have weak correlation under 0.7 at r = 0.1231742**, indicating that the dependent variables lack multicollinearity.
+:::
+
+------------------------------------------------------------------------
+
+# Run Analysis
+
+```{r}
+MANOVA <- manova(cbind(trestbps, chol) ~ sex, data = heartAttacks)
+summary(MANOVA)
+```
+
+::: {style="color: #0187DE"}
+### Analysis: 
+
+**There is a significant difference in heart attack predictors and sex of participant.**
+
+**The *p* value is significant at *p* \< .05**, indicating a significant difference in the bound dependent variables and the independent variable.
+:::
+
+------------------------------------------------------------------------
+
+# Post Hocs
+
+### ANOVAs as Post Hocs
+
+```{r}
+summary.aov(MANOVA, test = "wilks") 
+```
+
+::: {style="color: #0187DE"}
+### Post Hocs: 
+
+-   [***p*** **value is NOT significant at *p* \> 0.5**, indicating there is a NOT a significant difference in **resting blood pressure** and **sex** of participant. ]{style="color: #D2222D"}
+
+-   ***p*** **value IS significant at *p* \< 0.5**, indicating there IS a significant difference in **cholesterol** and **sex** of participant.
+:::
+
+------------------------------------------------------------------------
+
+::: {style="color: #0187DE"}
+# Conclusion
+
+> How does gender (`sex`) influence some of the heart attack predictors like resting blood pressure (`trestbps`) and cholesterol (`chol`)?
+
+**Gender affects cholesterol levels significantly,** but does not significantly impact resting blood pressure as a predictor of heart attack.
+:::

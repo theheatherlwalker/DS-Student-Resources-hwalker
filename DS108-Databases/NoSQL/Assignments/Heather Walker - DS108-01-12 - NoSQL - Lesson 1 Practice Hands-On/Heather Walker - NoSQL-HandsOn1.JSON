@@ -1,0 +1,39 @@
+db.createCollection("appusers");
+
+db.appusers.insertOne({_id:1,lastName:"Pumpernickel", firstName:"Georgina", middleName:"Sasquatch", age:27, gender:"f"})
+
+db.appusers.insertOne({_id:2,lastName:"Wilson", firstName:"Coderboy", age:18, favoriteColor:"blue"})
+
+db.appusers.find({})
+
+db.appusers.insertMany([{lastName: "Anstruther", firstName: "Jimmy", age: 21}, {lastName: "Stevens", firstName: "Amelia", age: 28},{lastName: "Hopkins", firstName: "Fred", age: 35, favoriteColor: "Green"}])
+
+db.appusers.find({})
+
+db.movies.insertMany([{title: "The Shawshank Redemption", director: "Frank Darabont", yearReleased: 1994}, {title: "The Dark Knight", director: "Christopher Nolan", yearReleased: 2008}, {title: "It's a Wonderful Life", director: "Frank Capra", yearReleased: 1946}])
+
+
+db.appusers.insertOne({lastName:"Walker", firstName:"Heather", middleName:"Lee", age:37, favoriteColor:"blue"})
+
+db.appusers.insertOne({lastName:"Walker", firstName:"Cinder", middleName:"SweetBoi", age:6, breed: "Standard Poodle", favoriteFood:"lamb"})
+
+db.appusers.insertOne({lastName:"Walker", firstName:"Jarrod", middleName:"Thomas", age:39, favoriteFood:"burgers"})
+
+db.appusers.find({})
+
+
+db.createCollection("cars");
+
+db.cars.insertMany([
+{make: "Toyota", model: "Corolla", color: "white",year: 2003, fourDoor: true, fourWheelDrive: false }, 
+ 
+ {make: "Scion", model: "Xb", color: "black", year: 2014, fourDoor: true, fourWheelDrive: false }, 
+ 
+ {make: "Mitsubishi", model: "Delica", color: "blue grey", year: 1993, fourDoor: true, fourWheelDrive: true },
+ 
+ {make: "Subaru", model: "Impreza", color: "white", year: 2001, fourDoor: true, fourWheelDrive: true }, 
+ 
+ {make: "Dodge", model: "Magnum", color: "red", year: 2007, fourDoor: true, fourWheelDrive: false }])
+
+
+db.cars.find({})

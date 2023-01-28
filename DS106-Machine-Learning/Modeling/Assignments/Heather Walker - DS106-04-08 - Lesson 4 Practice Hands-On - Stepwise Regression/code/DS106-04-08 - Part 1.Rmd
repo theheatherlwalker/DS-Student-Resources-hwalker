@@ -1,0 +1,59 @@
+---
+title: "DS106-04-08 - Lesson 4 Practice Hands-On - Stepwise Regression - Part 1"
+output:
+  html_document:
+    df_print: paged
+---
+
+`{# Part 1: Backwards Elimination}`
+
+```{r}
+iq = read.csv("data/IQ.csv")
+```
+
+```{r}
+head(iq)
+```
+
+```{r}
+# Create a linear model of all 10 predictor variables.
+FitAll = lm(IQ ~ ., data = iq)
+```
+
+```{r}
+# Summary of model
+summary(FitAll)
+```
+
+```{r}
+step(FitAll, direction = 'backward')
+```
+
+```{r}
+# Create new model with just the un-eliminated variables:
+FitSome = lm(formula = IQ ~ Test1 + Test2 + Test4, data = iq)
+
+# Summary of model
+summary(FitSome)
+```
+
+# Questions:
+
+1.  Which model is the best? Why?\
+    Best model is:
+
+        IQ ~ Test1 + Test2 + Test4
+
+2.  From the best model, what is the adjusted R\^2 value and what does it mean?
+
+    1.  There is a `multiple R2 = 0.3839`. The model explains 38.39% of the variation the `IQ` variable.
+
+    2.  There is an `adjusted R2 = 0.2158`. The adjustment is a modification that is supposed to take into account the number of terms in the model.
+
+3.  From the best model, how does each variable influence IQ?
+
+    1.  `Test1` affects `IQ` by `-1.9650` -\> as `Test1` goes down, `IQ` goes up.
+
+    2.  `Test2` affects `IQ` by `-1.6485` -\> as `Test2` goes down, `IQ` goes up.
+
+    3.  `Test4` affects `IQ` by `3.7890` -\> as `Test4` goes up, `IQ` also goes up.

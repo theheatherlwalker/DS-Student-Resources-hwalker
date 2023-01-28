@@ -1,0 +1,66 @@
+---
+title: "DS106-04-08 - Lesson 4 Practice Hands-On - Stepwise Regression - Part 2"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+stepwiseRegression = read.csv("data/stepwiseRegression.csv")
+
+head(stepwiseRegression)
+```
+
+```{r}
+# BACKWARD ELIMINATION
+
+# Create a linear model of all predictor variables.
+FitAll = lm(Y ~ ., data = stepwiseRegression)
+
+# Summary of model
+summary(FitAll)
+
+step(FitAll, direction = 'backward')
+
+```
+
+```{r}
+# FORWARD SELECTION
+
+# Create a linear model of all predictor variables.
+FitStart = lm(Y ~ 1, data = stepwiseRegression)
+
+# Summary of model
+summary(FitStart)
+
+step(FitStart, direction = 'forward', scope = (formula(FitAll)))
+
+```
+
+```{r}
+# HYBRID STEPWISE
+
+# Create model
+step(FitStart, direction = 'both', scope = (formula(FitAll)))
+
+```
+
+# Questions:
+
+1.  Which model was the best for each method?
+    1.  Backward Elimination:
+
+            formula = Y ~ X2 + X4 + X6 + X10 + X11 + X12
+
+    2.  Forward Selection:
+
+            formula = Y ~ X6 + X4 + X12 + X10 + X2 + X11
+
+    3.  Hybrid Stepwise:
+
+            formula = Y ~ X6 + X4 + X12 + X10 + X2 + X11
+
+2.  How do the final models from each method compare to each other?\
+    They each include: `X2`, `X4`, `X6`, `X10`, `X11`, and `X12`.\
+    However, the order is the *same* for Forward Selection and Hybrid Stepwise, \
+    while the order is drastically different for Backward Elimination.

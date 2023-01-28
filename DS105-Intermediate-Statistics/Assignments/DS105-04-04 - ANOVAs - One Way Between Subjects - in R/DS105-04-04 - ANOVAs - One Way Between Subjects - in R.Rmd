@@ -1,0 +1,251 @@
+---
+title: "DS105-04-04 - ANOVAs - One Way Between Subjects - in R"
+output: html_notebook
+---
+
+## Load Libraries
+
+```{r}
+library("dplyr")
+library("rcompanion")
+library("car")
+```
+
+------------------------------------------------------------------------
+
+## Load in Data
+
+```{r}
+apps <- read.csv("./assets/NEWgoogleplaystore.csv")
+
+  # VIEW THE DATA
+  View(apps)
+```
+
+------------------------------------------------------------------------
+
+## Question Setup
+
+With this data, you will answer the question:
+
+    Is there a difference in price among the three app categories of beauty, food and drink, and photography? 
+
+In order to answer this question, your x, or independent variable, will be the app categories, which has three levels: beauty, food and drink, and photography. Your y, or dependent variable, will be the price. As with all ANOVAs, the IV will be categorical, and the DV will be continuous.
+
+------------------------------------------------------------------------
+
+## Data Wrangling
+
+Depending on the data that you've been given, it may need some wrangling!
+
+### **Filter the Data and Remove Missing Values**
+
+In this case, the data has many more categories than three, so you will need to filter the dataset by the categories you want: beauty, food and drink, and photography.
+
+    apps <- na.omit(NEWgoogleplaystore %>% filter(Category %in% c("BEAUTY", "FOOD_AND_DRINK", "PHOTOGRAPHY")))
+
+Now you are all prepared to run a one-way ANOVA.
+
+### **Make Price Numeric**
+
+You will also need to make your dependent variable, price, numeric, so that you can test for some of your assumptions:
+
+    apps$Price <- as.numeric(apps$Price)
+
+------------------------------------------------------------------------
+
+## **Test Assumptions**
+
+Before you go any further, it's important to test for assumptions. If the assumptions are not met for ANOVA, but you proceeded anyway, you run the risk of biasing your results.
+
+### **Normality**
+
+You only need to test for the normality of the dependent variable, since the IV is categorical.
+
+    plotNormalHistogram(apps$Price)
+
+Here is the result:
+
+![A graph depicts the plot of x against frequency. A curve and a bar is plotted on the graph. The x-axis ranges from 0 to 100 and the y-axis ranges from 0 to 500. The peak position of the curve reaches the tallest bar.](https://resources.api.exeterlms.com/content/courses/DSO105C/20221130170513/media/GPSANOVAHisto.png?access_token=5954D97DC472CC128057966BC54CA7D8BC30772588F11897D22812C782593E40){alt="A graph depicts the plot of x against frequency. A curve and a bar is plotted on the graph. The x-axis ranges from 0 to 100 and the y-axis ranges from 0 to 500. The peak position of the curve reaches the tallest bar."}
+
+Looks like that isn't normal in any way - it is very highly positively skewed. So, you'll try to transform price by square rooting or cube rooting the column.
+
+    apps$PriceSQRT <- sqrt(apps$Price)
+    plotNormalHistogram(apps$PriceSQRT)
+
+Here's the result of the squaring:
+
+![A graph depicts the plot of x against frequency. A curve and a bar is plotted on the graph. The x-axis ranges from 0 to 8000 and the y-axis ranges from 0 to 500. The peak position of the curve reaches the tallest bar.](https://resources.api.exeterlms.com/content/courses/DSO105C/20221130170513/media/GPSANOVAsqrt.png?access_token=5954D97DC472CC128057966BC54CA7D8BC30772588F11897D22812C782593E40){alt="A graph depicts the plot of x against frequency. A curve and a bar is plotted on the graph. The x-axis ranges from 0 to 8000 and the y-axis ranges from 0 to 500. The peak position of the curve reaches the tallest bar."}
+
+So that hasn't made any improvements. Try cubing it:
+
+    apps$PriceCUBE <- apps$Price ^ 3
+    plotNormalHistogram(apps$PriceCUBE)
+
+With this result:
+
+![A graph depicts the plot of x against frequency. A curve and a bar is plotted on the graph. The x-axis ranges from 0 e plus 00 to 8 e plus 05 and the y-axis ranges from 0 to 500. The peak position of the curve reaches the tallest bar.](https://resources.api.exeterlms.com/content/courses/DSO105C/20221130170513/media/GPSANOVAcubed.png?access_token=5954D97DC472CC128057966BC54CA7D8BC30772588F11897D22812C782593E40){alt="A graph depicts the plot of x against frequency. A curve and a bar is plotted on the graph. The x-axis ranges from 0 e plus 00 to 8 e plus 05 and the y-axis ranges from 0 to 500. The peak position of the curve reaches the tallest bar."}
+
+Looks like neither of these are really any better than the original, so you might as well keep the original data to ease interpretation. ANOVA is somewhat tolerant of violations of normality when you have a large sample size. Your other option would be to run another analysis that did not require normality.
+
+### **Homogeneity of Variance**
+
+You can test for homogeneity of variance easily using either Bartlett's test or Fligner's Test. Bartlett's test is for when your data is normally distributed, and Fligner's test is for when your data is non-parametric. No matter which test you are using, you are looking for a non-significant test. The null hypothesis for both of these is that the data has equal variance, so you'd like to have a *p* value of \> .05. You have already determined your data is not normally distributed, so ordinarily you would just perform Fligner's test, but just for learning purposes, you'll try both here.
+
+#### **Bartlett's Test**
+
+To do Bartlett's test, use the function `bartlett.test()`, with the argument of the y data separated by a tilde, followed by the x data. Then there's an argument `data=`, which is where you will specify the name of your dataset.
+
+    bartlett.test(Price ~ Category, data=apps)
+
+Here is the output:
+
+        Bartlett test of homogeneity of variances
+
+    data:  Price by Category
+    Bartlett's K-squared = Inf, df = 2, p-value < 2.2e-16
+
+The *p* value associated with this test is \< .05, which means that unfortunately, you have violated the assumption of homogeneity of variance.
+
+------------------------------------------------------------------------
+
+#### **Fligner's Test**
+
+To perform Fligner's test, use the function `fligner.test()`, with the argument of the y data separated by a tilde, followed by the x data. Then there's an argument `data=`, which is where you will specify the name of your dataset.
+
+    fligner.test(Price ~ Category, data=apps)
+
+Here is the output:
+
+        Fligner-Killeen test of homogeneity of variances
+
+    data:  Price by Category
+    Fligner-Killeen:med chi-squared = 4.878, df = 2, p-value = 0.08725
+
+Although this test is less significant that Bartlett's, because you have run the correct test for your data, the *p* value is still \< .05, which means you have violated the assumption of homogeneity of variance.
+
+#### **Correcting for Violations of Homogeneity of Variance**
+
+There are two ways that you can correct for a violation of homogeneity of variance. The first is the BoxCox transformation of your data, and the second is running a slightly different type of ANOVA, one that was created specifically to handle this violation. That test is called the *Welch One-Way Test*, and you'll learn about this ANOVA option.
+
+### **Sample Size**
+
+An ANOVA requires a sample size of at least 20 per independent variable. In this case, you only have one independent variable, so as long as you have at least 20 cases, you are fine. Looking at the data, the *n* is 515, so you are fine to proceed with this assumption!
+
+### **Independence**
+
+There is no statistical test for the assumption of independence.
+
+------------------------------------------------------------------------
+
+# `### PART 2`
+
+# **Computing ANOVAs with Equal Variance (Met Homogeneity of Variance Assumption)**
+
+In this case, your data met this assumption, so this is the appropriate ANOVA to compute.
+
+Below is the code to run a one-way ANOVA in R. You can give your ANOVA a name; this one is named `appsANOVA`. Then you want to use the function `aov()`. The argument for this function is your y variable, which is continuous, followed by a tilde and then your x variable, which is categorical. Remember that the tilde reads as "by," so you can think of this as analyzing price by category.
+
+    appsANOVA <- aov(apps$Price ~ apps$Category)
+
+Here is an example of the `summary()` function:
+
+    summary(appsANOVA)
+
+Which will provide the following output:
+
+                   Df Sum Sq Mean Sq F value Pr(>F)  
+    apps$Category   2    5.2   2.617   1.601 0.203 *
+    Residuals     465  760.2    1.635                 
+    ---
+    Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+The first row of the output has the `Df`, or degrees of freedom. The row for your category is calculated as 1 - \# of Levels, so that is always a good gut check. Next, you have rows for the `Sum Sq` and `Mean Sq`; these are just some of the calculations that went into getting your *F*-value, which is the test statistic for an ANOVA. The real meat that you want to pay attention to is the F value itself and the associated *p*-value next to it. Like anything else, if this value is less than .05, the test was significant. If you ever need a reminder of that, you can look at the star and `Signif. codes` down at the bottom. The p-value is above 0.05. If you version of R supports Signif. codes: you may see a star next to this p-value. Upon checking the legend: we see that 1 star represents a significant value of 0.05 and below: i.e. the p-value of 0.203 is not significant.
+
+# **Computing ANOVAs with Unequal Variance (Violated Homogeneity of Variance Assumption)**
+
+If you need to correct for violating the assumption of homogeneity of variance, you can run an ANOVA that was meant to correct for that violation, using a Welch's One-Way Test. To do this, you will actually create a linear model first, and then use the function `Anova()` on it.
+
+### **Fun Fact!**
+
+The distribution and statistics behind regression and ANOVAs are the same! However, they way you use and conceptualize them is very different.
+
+### **Computing Post Hocs with No Adjustment**
+
+Here is the code for computing a post hoc in R:
+
+    pairwise.t.test(apps$Price, apps$Category, p.adjust="none")
+
+Use the `pairwise.t.test()` function, with the arguments of the two variables you are crossing, and the argument `p.adjust=`. To show you why a correction is necessary, you will start out with a value of `"none"`, which means that no correction is being made for Type I error. Here are the results:
+
+        Pairwise comparisons using t tests with pooled SD 
+
+    data:  apps$Price and apps$Category 
+
+                   BEAUTY FOOD_AND_DRINK
+    FOOD_AND_DRINK 0.74  -             
+    PHOTOGRAPHY    0.19  0.16         
+
+    P value adjustment method: none 
+
+What is presented in the matrix above is the *p*-values for each *t*-test between the pairs of the levels of your independent variable. Reading this, you can see that there was not a *significant difference* in price between any of the pairs of apps.
+
+------------------------------------------------------------------------
+
+### **Computing Post Hocs with Bonferroni Adjustment**
+
+You may be pretty pleased with finding a significant difference in price between app categories. But guess what? That difference may not really exist, because by running three *t*-tests, you may have increased your Type I error. So, better to typically stick with some form of correction, like Bonferroni. It is relatively "mild," but gets the job done!
+
+    pairwise.t.test(apps$Price, apps$Category, p.adjust="bonferroni")
+
+And here are the results:
+
+        Pairwise comparisons using t tests with pooled SD 
+
+    data:  apps$Price and apps$Category 
+
+                   BEAUTY FOOD_AND_DRINK
+    FOOD_AND_DRINK 1.000  -             
+    PHOTOGRAPHY    0.56   0.48         
+
+    P value adjustment method: bonferroni 
+
+Gasp! You find that your findings are even less significant. Notice the comparison between food and drink and beauty apps. Since a *p*-value can only be between 0 and 1, that's the end of line; as non-significant as something gets. This has just demonstrated why it's important to always, always, apply a correction to your post hocs!
+
+------------------------------------------------------------------------
+
+### **Computing Post Hocs When You've Violated the Assumption of Homogeneity of Variance**
+
+There is an easy solution to computing post hocs when you have violated the assumption of homogeneity of variance. You'll use the same codes as above, but include the argument `pool.sd = FALSE` at the end. Like this:
+
+    pairwise.t.test(apps$Price, apps$Category, p.adjust="bonferroni", pool.sd = FALSE)
+
+This provides a very similar output, the only difference being that is was calculated with non-pooled standard deviations, as noted at the top.
+
+        Pairwise comparisons using t tests with non-pooled SD 
+
+    data:  apps$Price and apps$Category 
+
+                   BEAUTY  FOOD_AND_DRINK
+    FOOD_AND_DRINK 0.4943 -             
+    PHOTOGRAPHY    0.0035 0.1470       
+
+    P value adjustment method: bonferroni 
+
+As you can see, once you've corrected for this assumption, your results have changed and your pairwise comparison between both photography and beauty apps is significant.
+
+------------------------------------------------------------------------
+
+## **Determine Means and Draw Conclusions**
+
+If you had found a significant difference after correction, you would want to then finish interpreting the results and draw some conclusions. To do that, you need to examine the means! Again, `dplyr` nicely comes to the rescue.
+
+    appsMeans <- apps %>% group_by(Category) %>% summarize(Mean = mean(Price))
+
+Here's the result:
+
+![A table with two columns and three rows. The column headings are labeled category and mean. The row entries are as follows. Row 1, beauty, 0.00000000. Row 2, food and drink, 0.07779817. Row 3, photography, 0.27835962.](https://resources.api.exeterlms.com/content/courses/DSO105C/20221130170513/media/DSO105L04P5.png?access_token=5954D97DC472CC128057966BC54CA7D8BC30772588F11897D22812C782593E40){alt="A table with two columns and three rows. The column headings are labeled category and mean. The row entries are as follows. Row 1, beauty, 0.00000000. Row 2, food and drink, 0.07779817. Row 3, photography, 0.27835962."}
+
+The post-hoc tests for this data that meets the assumption of homogeneity of variance did not result in any significant differences between apps. Looking at these means, it makes sense that the differences are very small!
+
+\

@@ -1,0 +1,146 @@
+db.employees.insertMany([
+{
+  name: "Alison Davidson",
+  birthday: new Date( "04/05/1975" ),
+  address: "874 W. Oak Place",
+  city: "Gary",
+  state: "Indiana",
+  position: { positionName: "Customer Support", remote: true, fullTime: true }
+}, 
+{
+  name: "Henry Chapelton",
+  birthday: new Date( "09/29/1980" ),
+  address: "9324 E. Vista Way",
+  city: "Tempe",
+  state: "Arizona",
+  position: { positionName: "Customer Support", remote: false, fullTime: true }
+}, 
+{
+  name: "Alex Miller",
+  birthday: new Date( "11/22/1983" ),
+  address: "244 Price Road",
+  city: "Mesa",
+  state: "Arizona",
+  position: { positionName: "Customer Support", remote: false, fullTime: false }
+}, 
+{
+  name: "Carly Nielson",
+  birthday: new Date( "08/04/1987" ),
+  address: "678 W. Westward Road",
+  city: "Phoenix",
+  state: "Arizona",
+  position: { positionName: "Office Manager", remote: false, fullTime: true }
+}, 
+{
+  name: "Tom Talbot",
+  birthday: new Date( "12/30/1989" ),
+  address: "12 Oakland Way",
+  city: "Chandler",
+  state: "Arizona",
+  position: { positionName: "Inventory Manager", remote: false, fullTime: true }
+}, 
+{
+  name: "Mary Crawley",
+  birthday: new Date( "07/06/1980" ),
+  address: "1010 Granite Way",
+  city: "Charlotte",
+  state: "North Carolina",
+  position: { positionName: "Human Resources", remote: true, fullTime: true }
+}, 
+{
+  name: "Daisy Baxter",
+  birthday: new Date( "09/09/1987" ),
+  address: "990 E. 84th St.",
+  city: "Tempe",
+  state: "Arizona",
+  position: { positionName: "CEO", remote: false, fullTime: true }
+}, 
+{
+  name: "William Coyle",
+  birthday: new Date( "10/11/1991" ),
+  address: "944 W. 16th St.",
+  city: "Phoenix",
+  state: "Arizona",
+  position: { positionName: "Intern", remote: false, fullTime: false }
+}, 
+{
+  name: "Edith Bates",
+  birthday: new Date( "07/28/1990" ),
+  address: "7 E. 20th Pl.",
+  city: "Chandler",
+  state: "Arizona",
+  position: { positionName: "Customer Support", remote: false, fullTime: true }
+}, 
+{
+  name: "Gwen Harding",
+  birthday: new Date( "10/11/1986" ),
+  address: "234 W. 48th. St.",
+  city: "Phoenix",
+  state: "Arizona",
+  position: { positionName: "Office Assistant", remote: false, fullTime: true }
+}
+]);
+
+
+db.employees.find();
+
+
+
+
+
+
+db.employees.find({name: "Alison Davidson"});
+
+
+db.employees.replaceOne({name: "Alison Davidson"}, 
+{
+  name: "Alison Davidson",
+  birthday: new Date( "04/05/75" ),
+  address: "777 E. 1st St. # 120",
+  city: "Tempe",
+  state: "Arizona",
+  position: { positionName: "Customer Support", remote: false, fullTime: true }
+});
+
+db.employees.find({name: "Alison Davidson"});
+
+
+
+
+
+
+db.employees.find({name: "Mary Crawley"});
+
+
+db.employees.replaceOne({name: "Mary Crawley"}, 
+{
+  name: "Mary Crawley",
+  birthday: new Date( "07/06/80" ),
+  address: "8322 W. Vista Pl.",
+  city: "Scottsdale",
+  state: "Arizona",
+  position: { positionName: "Human Resources", remote: false, fullTime: true }
+});
+
+
+db.employees.find({name: "Mary Crawley"});
+
+
+
+
+
+
+db.employees.find();
+
+db.employees.updateMany( { }, { $unset: { state: "" }});
+
+db.employees.find();
+
+
+
+
+
+
+db.employees.createIndex( { position: 1 });
+
+db.employees.getIndexes();

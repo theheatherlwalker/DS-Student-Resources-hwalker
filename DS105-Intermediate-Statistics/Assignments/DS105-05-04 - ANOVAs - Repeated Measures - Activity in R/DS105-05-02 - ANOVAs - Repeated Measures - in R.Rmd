@@ -1,0 +1,155 @@
+---
+title: "DS105-05-02 - ANOVAs - Repeated Measures - in R"
+output: html_notebook
+---
+
+## Load Libraries
+
+```{r}
+#install.packages("fastR2")
+#install.packages("car")
+library("rcompanion")
+library("fastR2")
+library("car")
+```
+
+------------------------------------------------------------------------
+
+## Load in Data
+
+```{r}
+breakfast <- read.csv("./assets/breakfast.csv")
+
+  # View data
+    head(breakfast)
+```
+
+------------------------------------------------------------------------
+
+## Question Setup
+
+**Were there weight changes from baseline to follow?**
+
+------------------------------------------------------------------------
+
+## Data Wrangling
+
+### Filter Data
+
+```{r}
+breakfast1 <- breakfast[1:33,]
+
+head(breakfast1)
+```
+
+### Reshape Data
+
+```{r}
+keep = c("Participant.Code", "Treatment.Group", "Age..y.", "Sex", "Height..m.", "Baseline.Body.Mass..kg.", "Follow.Up.Body.Mass..kg.")
+
+breakfast2 <- breakfast1[keep]
+
+head(breakfast2)
+```
+
+------------------------------------------------------------------------
+
+## Baseline Data
+
+```{r}
+breakfast3 <- breakfast2[,1:5]
+breakfast3$repdat <- breakfast2$Baseline.Body.Mass..kg.
+breakfast3$contrasts <- "T1"
+head(breakfast3)
+```
+
+## Follow-up Data
+
+```{r}
+breakfast4 <- breakfast2[,1:5]
+breakfast4$repdat <- breakfast2$Follow.Up.Body.Mass..kg.
+breakfast4$contrasts <- "T2"
+head(breakfast4)
+```
+
+Once you have both of those, then you need to `rbind()` them back together into one whole dataset:
+
+```{r}
+breakfast5 <- rbind(breakfast3, breakfast4)
+```
+
+Now you are all prepared to run a repeated measures ANOVA, data shaping wise.
+
+\
+
+------------------------------------------------------------------------
+
+## **Test Assumptions**
+
+### **Assumption: Normality**
+
+You only need to test for the normality of the dependent variable, but you need to do it at both timepoints. So scoot on back to `breakfast2`, which is the dataset you truncated but had not yet reshaped.
+
+```{r}
+plotNormalHistogram(breakfast2$Baseline.Body.Mass..kg.)
+```
+
+Try the follow-up data:
+
+```{r}
+plotNormalHistogram(breakfast2$Follow.Up.Body.Mass..kg.)
+```
+
+::: {style="color: #238823"}
+**Meets assumption of Normality.**
+:::
+
+\
+**Assumption: Homogeneity of Variance**
+
+```{r}
+leveneTest(repdat ~ Treatment.Group*contrasts, data=breakfast5)
+```
+
+::: {style="color: #238823"}
+**Meets assumption of Homogeneity of Variance.** \
+**`p > .05`**, which means that the data meets the assumption of Homogeneity of Variance.
+:::
+
+### Sample Size
+
+A repeated measures ANOVA requires a sample size of at least 20 per independent variable.
+
+```{r}
+str(breakfast5)
+```
+
+::: {style="color: #238823"}
+**Meets assumption of adequate sample size.**
+:::
+
+### Sphericity
+
+The only way to test for sphericity in R is to take a multivariate approach and make it work for an ANOVA. At this time, that is a bit too complex, but it may be covered later.
+
+------------------------------------------------------------------------
+
+## **Analysis**
+
+You will continue to use the `aov()` function, but add some additional arguments to it to make it repeated measures.
+
+```{r}
+RManova <- aov(repdat~contrasts+Error(Participant.Code), breakfast5)
+summary(RManova)
+```
+
+So what's happening here is that you are calling the `aov()` function on your repeated data of metabolic rate by your timepoint, and then adding in an error term, which is what makes this a repeated measure - you are telling it that it should be looking within each participant, which is what ths part of the code does: `Error(Participant.Code)`. Finish it all off by specifying the dataset at the end and you are good to go. Call `summary()` on the results:
+
+\
+Under the `Error:Within` table (since this is a within subjects ANOVA, after all), the you will find your *F* value and the associated *p* value. Looks like there is not a significant effect of time on resting metabolic rate.
+
+::: {style="color: #0187DE"}
+# Conclusion:
+
+***`p`*** **`> .5`**, which indicates there is *not a significant effect* of time on the participants' body mass.
+:::
